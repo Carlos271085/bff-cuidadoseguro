@@ -1,42 +1,116 @@
 package com.cuidadoseguro.bff_cuidadoseguro.service;
 
-// Importa el DTO del login
-import com.cuidadoseguro.bff_cuidadoseguro.dto.LoginRequest;
+import com.cuidadoseguro.bff_cuidadoseguro.dto.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-// Permite leer valores desde application.properties
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
-
-// Permite crear servicios Spring
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-// Cliente HTTP para consumir otros microservicios
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
 public class AuthService {
 
-    // Inyección de RestTemplate
     private final RestTemplate restTemplate;
 
-    // URL del microservicio auth
-    @Value("${auth.url}")
-    private String authUrl;
+    @Value("${gateway.url}")
+    private String gatewayUrl;
 
-    // Constructor
     public AuthService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
-    // Método para enviar login al ms-auth
     public String login(LoginRequest request) {
-
-        // Endpoint login del ms-auth
-        String url = authUrl + "/auth/login";
-
-        // Envía el request y obtiene respuesta
+        //System.out.println("AAA: "+gatewayUrl + "/auth/login");
         return restTemplate.postForObject(
-                url,
+                gatewayUrl + "/auth/login",
                 request,
+                String.class
+        );
+    }
+
+    public String register(RegisterRequest request) {
+        return restTemplate.postForObject(
+                gatewayUrl + "/auth/register",
+                request,
+                String.class
+        );
+    }
+
+    public String refresh(RefreshRequest request) {
+        return restTemplate.postForObject(
+                gatewayUrl + "/auth/refresh",
+                request,
+                String.class
+        );
+    }
+
+    public String logout(LogoutRequest request) {
+        return restTemplate.postForObject(
+                gatewayUrl + "/auth/logout",
+                request,
+                String.class
+        );
+    }
+
+    public String validate(String token) {
+
+        String url = gatewayUrl + "/auth/validate";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+        try {
+
+            ResponseEntity<String> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    entity,
+                    String.class
+            );
+
+            return response.getBody();
+
+        } catch (HttpClientErrorException e) {
+
+            try {
+
+                ObjectMapper mapper = new ObjectMapper();
+
+                Map<String, Object> error =
+                        mapper.readValue(e.getResponseBodyAsString(), Map.class);
+
+                Map<String, Object> response = new HashMap<>();
+
+                response.put("success", false);
+                response.put("message", error.get("message"));
+                response.put("data", true);
+                response.put("timestamp", LocalDateTime.now().toString());
+                response.put("errorCode", null);
+                
+
+                return mapper.writeValueAsString(response);
+
+            } catch (Exception ex) {
+
+                return "{\"success\":false,\"message\":\"Error interno\"}";
+            }
+        }
+    }
+
+    public String health() {
+        return restTemplate.getForObject(
+                gatewayUrl + "/auth/health",
                 String.class
         );
     }

@@ -1,33 +1,71 @@
 package com.cuidadoseguro.bff_cuidadoseguro.controller;
 
-// Permite crear endpoints REST
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-// Importamos el servicio que consume el API Gateway
+import com.cuidadoseguro.bff_cuidadoseguro.dto.PacienteDto;
 import com.cuidadoseguro.bff_cuidadoseguro.service.PacienteService;
 
-@RestController
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
-// Ruta base del controlador
-@RequestMapping("/bff")
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@Tag(
+    name = "BFF - Pacientes",
+    description = "Orquestación de pacientes vía API Gateway"
+)
+@RestController
+@RequestMapping("/bff/pacientes")
+@RequiredArgsConstructor
 public class PacienteController {
 
-    // Servicio que se conectará al API Gateway
     private final PacienteService pacienteService;
 
-    // Constructor para inyectar el servicio
-    public PacienteController(PacienteService pacienteService) {
-        this.pacienteService = pacienteService;
+    @GetMapping
+    @Operation(summary = "Listar pacientes")
+    public ResponseEntity<?> listar(@RequestHeader("Authorization") String token) {
+        //System.out.println("BFF RECIBE: " + token);
+        return pacienteService.listar(token);
     }
 
-    // Endpoint GET para obtener pacientes
-    @GetMapping("/pacientes")
-    public String obtenerPacientes() {
+    @Operation(summary = "Obtener paciente por ID")
+    @GetMapping("/{id}")
+    public ResponseEntity<PacienteDto> obtener(
+            @RequestHeader(value = "Authorization", required = false) String token,
+            @PathVariable Long id
+    ) {
+        return ResponseEntity.ok(pacienteService.obtener(token, id));
+    }
 
-        // Llama al servicio y devuelve la respuesta
-        // obtenida desde el API Gateway
-        return pacienteService.obtenerPacientes();
+    @Operation(summary = "Crear paciente")
+    @PostMapping
+    public ResponseEntity<PacienteDto> crear(
+            @RequestHeader(value = "Authorization", required = false) String token,
+            @RequestBody PacienteDto paciente
+    ) {
+        return ResponseEntity.ok(pacienteService.crear(token, paciente));
+    }
+
+    @Operation(summary = "Actualizar paciente")
+    @PutMapping("/{id}")
+    public ResponseEntity<PacienteDto> actualizar(
+            @RequestHeader(value = "Authorization", required = false) String token,
+            @PathVariable Long id,
+            @RequestBody PacienteDto paciente
+    ) {
+        return ResponseEntity.ok(pacienteService.actualizar(token, id, paciente));
+    }
+
+    @Operation(summary = "Eliminar paciente")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> eliminar(
+            @RequestHeader(value = "Authorization", required = false) String token,
+            @PathVariable Long id
+    ) {
+        pacienteService.eliminar(token, id);
+        return ResponseEntity.ok("Paciente eliminado");
     }
 }
