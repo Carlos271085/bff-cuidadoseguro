@@ -1,35 +1,49 @@
 package com.cuidadoseguro.bff_cuidadoseguro.controller;
 
-// Importa DTO login
-import com.cuidadoseguro.bff_cuidadoseguro.dto.LoginRequest;
-
-// Importa servicio auth
+import com.cuidadoseguro.bff_cuidadoseguro.dto.*;
 import com.cuidadoseguro.bff_cuidadoseguro.service.AuthService;
-
-// Permite crear controladores REST
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-
-// Ruta base del controlador
 @RequestMapping("/bff/auth")
-
+@RequiredArgsConstructor
 public class AuthController {
 
-    // Inyección del servicio auth
     private final AuthService authService;
 
-    // Constructor
-    public AuthController(AuthService authService) {
-        this.authService = authService;
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LoginRequest request) {
+        return ResponseEntity.ok(authService.login(request));
     }
 
-    // Endpoint POST para login
-    @PostMapping("/login")
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
+        return ResponseEntity.ok(authService.register(request));
+    }
 
-    public String login(@RequestBody LoginRequest request) {
+ 
+    @PostMapping("/refresh")
+    public ResponseEntity<String> refresh(@RequestBody RefreshRequest request) {
+        return ResponseEntity.ok(authService.refresh(request));
+    }
 
-        // Envía datos al ms-auth
-        return authService.login(request);
+ 
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestBody LogoutRequest request) {
+        return ResponseEntity.ok(authService.logout(request));
+    }
+
+    @GetMapping("/validate")
+    public ResponseEntity<String> validate(@RequestParam String token) {
+        return ResponseEntity.ok(authService.validate(token));
+    }
+
+ 
+    @GetMapping("/health")
+    public ResponseEntity<String> health() {
+        return ResponseEntity.ok(authService.health());
     }
 }

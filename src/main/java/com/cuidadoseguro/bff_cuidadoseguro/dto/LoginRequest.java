@@ -7,7 +7,7 @@ import lombok.Data;
 public class LoginRequest {
 
     // Correo del usuario
-    private String email;
+    private String username;
 
     // Contraseña del usuario
     private String password;

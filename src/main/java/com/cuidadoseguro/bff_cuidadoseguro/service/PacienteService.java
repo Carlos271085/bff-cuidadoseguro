@@ -1,40 +1,153 @@
 package com.cuidadoseguro.bff_cuidadoseguro.service;
 
-// Permite inyectar valores desde application.properties
+import com.cuidadoseguro.bff_cuidadoseguro.dto.PacienteDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.RequiredArgsConstructor;
+
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
-
-// Marca esta clase como un servicio de Spring Boot
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-
-// Permite realizar peticiones HTTP a otras APIs
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
+@RequiredArgsConstructor
 public class PacienteService {
 
-    // Objeto que permitirá consumir el API Gateway
     private final RestTemplate restTemplate;
 
-    // Obtiene automáticamente la URL configurada
-    // en application.properties
     @Value("${gateway.url}")
     private String gatewayUrl;
 
-    // Constructor para inyectar RestTemplate
-    public PacienteService(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+    private HttpHeaders buildHeaders(String token) {
+
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.setBearerAuth(token);
+
+        return headers;
     }
 
-    // Método que obtiene la lista de pacientes
-    // desde el API Gateway
-    public String obtenerPacientes() {
+    public ResponseEntity<?> listar(String token) {
 
-        // Construye la URL completa hacia el endpoint
-        // del API Gateway
-        String url = gatewayUrl + "/pacientes";
+        HttpHeaders headers = buildHeaders(token);
 
-        // Realiza una petición GET al Gateway
-        // y devuelve la respuesta como texto JSON
-        return restTemplate.getForObject(url, String.class);
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+        try {
+
+            return restTemplate.exchange(
+                    gatewayUrl + "/pacientes",
+                    HttpMethod.GET,
+                    entity,
+                    String.class
+            );
+
+        } catch (HttpClientErrorException e) {
+
+            try {
+
+                ObjectMapper mapper = new ObjectMapper();
+
+                Map<String, Object> errorBody =
+                        mapper.readValue(e.getResponseBodyAsString(), Map.class);
+
+                String message = (String) errorBody.get("message");
+
+                return ResponseEntity
+                        .status(e.getStatusCode())
+                        .body(Map.of("message", message));
+
+            } catch (Exception ex) {
+
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(Map.of("message", "Error interno"));
+            }
+        }
+    }
+
+    
+    public PacienteDto obtener(String token, Long id) {
+        HttpHeaders headers = new HttpHeaders();
+        if (token != null) {
+            headers.set("Authorization", "Bearer "+token);
+        }
+
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+        try {
+            ResponseEntity<PacienteDto> response = restTemplate.exchange(
+                    gatewayUrl + "/pacientes/" + id,
+                    HttpMethod.GET,
+                    entity,
+                    PacienteDto.class
+            );
+
+            return response.getBody();
+        } catch (HttpClientErrorException e) {
+            throw new RuntimeException("Error calling gateway: " + e.getStatusCode() + " " + e.getResponseBodyAsString());
+        }
+    }
+
+    public PacienteDto crear(String token, PacienteDto paciente) {
+        HttpHeaders headers = buildHeaders(token);
+
+        HttpEntity<PacienteDto> entity = new HttpEntity<>(paciente, headers);
+
+        try {
+            ResponseEntity<PacienteDto> response = restTemplate.exchange(
+                    gatewayUrl + "/pacientes",
+                    HttpMethod.POST,
+                    entity,
+                    PacienteDto.class
+            );
+
+            return response.getBody();
+        } catch (HttpClientErrorException e) {
+            throw new RuntimeException("Error calling gateway: " + e.getStatusCode() + " " + e.getResponseBodyAsString());
+        }
+    }
+
+    public PacienteDto actualizar(String token, Long id, PacienteDto paciente) {
+        HttpHeaders headers = buildHeaders(token);
+
+        HttpEntity<PacienteDto> entity = new HttpEntity<>(paciente, headers);
+
+        try {
+            ResponseEntity<PacienteDto> response = restTemplate.exchange(
+                    gatewayUrl + "/pacientes/" + id,
+                    HttpMethod.PUT,
+                    entity,
+                    PacienteDto.class
+            );
+
+            return response.getBody();
+        } catch (HttpClientErrorException e) {
+            throw new RuntimeException("Error calling gateway: " + e.getStatusCode() + " " + e.getResponseBodyAsString());
+        }
+    }
+    public void eliminar(String token, Long id) {
+        HttpHeaders headers = new HttpHeaders();
+        if (token != null) {
+            headers.set("Authorization", "Bearer "+token);
+        }
+
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+        try {
+            restTemplate.exchange(
+                    gatewayUrl + "/pacientes/" + id,
+                    HttpMethod.DELETE,
+                    entity,
+                    Void.class
+            );
+        } catch (HttpClientErrorException e) {
+            throw new RuntimeException("Error calling gateway: " + e.getStatusCode() + " " + e.getResponseBodyAsString());
+        }
     }
 }
