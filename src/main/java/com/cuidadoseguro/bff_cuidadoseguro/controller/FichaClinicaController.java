@@ -10,7 +10,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/bff/fichas")
 @RequiredArgsConstructor
-@CrossOrigin("*")
+
 public class FichaClinicaController {
 
     private final FichaClinicaService service;
