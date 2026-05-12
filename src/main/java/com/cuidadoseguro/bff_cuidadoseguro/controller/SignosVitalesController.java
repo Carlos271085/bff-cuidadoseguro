@@ -10,7 +10,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/bff/signos-vitales")
 @RequiredArgsConstructor
-@CrossOrigin("*")
+
 public class SignosVitalesController {
 
     private final SignosVitalesService service;

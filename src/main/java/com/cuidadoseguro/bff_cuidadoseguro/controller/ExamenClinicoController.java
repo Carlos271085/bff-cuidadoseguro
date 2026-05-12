@@ -3,6 +3,8 @@ package com.cuidadoseguro.bff_cuidadoseguro.controller;
 import com.cuidadoseguro.bff_cuidadoseguro.dto.ExamenClinicoDto;
 import com.cuidadoseguro.bff_cuidadoseguro.service.ExamenClinicoService;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,16 +12,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/bff/examenes")
 @RequiredArgsConstructor
-@CrossOrigin("*")
+
 public class ExamenClinicoController {
 
     private final ExamenClinicoService service;
 
     @GetMapping
-    public List<ExamenClinicoDto> listarTodos(@RequestHeader("Authorization") String token) {
-        return service.listarTodos(token);
-    }
+    public ResponseEntity<?> listarTodos(
+            @RequestHeader("Authorization") String token) {
 
+        return ResponseEntity.ok(service.listarTodos(token));
+    }
     @PostMapping
     public ExamenClinicoDto guardar(@RequestHeader("Authorization") String token, @RequestBody ExamenClinicoDto examen) {
         return service.guardar(token, examen);

@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
+
 @RequiredArgsConstructor
 public class ControlMedicoService {
 

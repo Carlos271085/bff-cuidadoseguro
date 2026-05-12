@@ -10,7 +10,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/bff/indicaciones")
 @RequiredArgsConstructor
-@CrossOrigin("*")
+
 public class IndicacionMedicaController {
 
     private final IndicacionMedicaService service;

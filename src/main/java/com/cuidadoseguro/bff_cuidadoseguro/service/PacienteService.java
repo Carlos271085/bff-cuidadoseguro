@@ -32,6 +32,45 @@ public class PacienteService {
         return headers;
     }
 
+    public ResponseEntity<?> buscarPorRut(String token,String rut) {
+
+        HttpHeaders headers = buildHeaders(token);
+
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+        try {
+
+            return restTemplate.exchange(
+                    gatewayUrl + "/buscarRut?rut=" + rut,
+                    HttpMethod.GET,
+                    entity,
+                    String.class
+            );
+
+        } catch (HttpClientErrorException e) {
+
+            try {
+
+                ObjectMapper mapper = new ObjectMapper();
+
+                Map<String, Object> errorBody =
+                        mapper.readValue(e.getResponseBodyAsString(), Map.class);
+
+                String message = (String) errorBody.get("message");
+
+                return ResponseEntity
+                        .status(e.getStatusCode())
+                        .body(Map.of("message", message));
+
+            } catch (Exception ex) {
+
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(Map.of("message", "Error interno"));
+            }
+        }
+    }
+
     public ResponseEntity<?> listar(String token) {
 
         HttpHeaders headers = buildHeaders(token);

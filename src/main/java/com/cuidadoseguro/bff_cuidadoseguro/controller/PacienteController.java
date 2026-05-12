@@ -49,6 +49,15 @@ public class PacienteController {
         return ResponseEntity.ok(pacienteService.crear(token, paciente));
     }
 
+    @Operation(summary = "Buscar paciente por RUT")
+    @GetMapping("/buscarRut")
+    public ResponseEntity<?> buscarPorRut(
+            @RequestHeader(value = "Authorization", required = false) String token,
+            @RequestParam String rut
+    ) {
+        return pacienteService.buscarPorRut(token, rut);
+    }
+
     @Operation(summary = "Actualizar paciente")
     @PutMapping("/{id}")
     public ResponseEntity<PacienteDto> actualizar(

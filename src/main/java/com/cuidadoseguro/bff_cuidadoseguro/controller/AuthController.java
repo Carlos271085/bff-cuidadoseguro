@@ -19,6 +19,11 @@ public class AuthController {
         return ResponseEntity.ok(authService.login(request));
     }
 
+    @GetMapping("/userinfo")
+    public ResponseEntity<String> userInfo(@RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok(authService.getUserInfo(token));
+    }
+
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
         return ResponseEntity.ok(authService.register(request));
