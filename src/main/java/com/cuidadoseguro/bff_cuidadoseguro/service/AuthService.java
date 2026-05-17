@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -23,20 +24,31 @@ public class AuthService {
 
     private final RestTemplate restTemplate;
 
+    @Autowired
+    private PacienteService pacienteService;
+
     @Value("${gateway.url}")
     private String gatewayUrl;
+
+    private HttpHeaders buildHeaders(String token) {
+
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.set("Authorization", token);
+
+        return headers;
+    }
 
     public AuthService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
     public String login(LoginRequest request) {
-        //System.out.println("AAA: "+gatewayUrl + "/auth/login");
+        // System.out.println("AAA: "+gatewayUrl + "/auth/login");
         return restTemplate.postForObject(
                 gatewayUrl + "/auth/login",
                 request,
-                String.class
-        );
+                String.class);
     }
 
     public String getUserInfo(String token) {
@@ -46,9 +58,8 @@ public class AuthService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        headers.set("Authorization", "Bearer " + token);
-
-
+        // El token ya viene con Bearer desde React
+        headers.set("Authorization", token);
 
         HttpEntity<Void> request = new HttpEntity<>(headers);
 
@@ -56,34 +67,86 @@ public class AuthService {
                 url,
                 HttpMethod.GET,
                 request,
-                String.class
-        );
+                String.class);
 
         return response.getBody();
     }
 
-    public String register(RegisterRequest request) {
-        return restTemplate.postForObject(
+    public RegisterResponse register(RegisterRequest request) {
+                
+ 
+        RegisterResponse response = restTemplate.postForObject(
                 gatewayUrl + "/auth/register",
                 request,
-                String.class
+                RegisterResponse.class
         );
+
+        HttpHeaders headers = buildHeaders(response.getAccessToken());
+
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+
+        if (response.getUserInfo().getTipoUsuario().equalsIgnoreCase("PACIENTE")){
+            PacienteDto requestPaciente = new PacienteDto();
+            requestPaciente.setRut(request.getNumeroDocumento());
+            requestPaciente.setNombre(request.getNombres());
+            requestPaciente.setApellido(request.getApellidos());
+            requestPaciente.setFechaNacimiento(request.getFechaNacimiento());
+            requestPaciente.setGenero(request.getGenero());
+            
+            requestPaciente.setAlergias(request.getAlergias());
+            
+            //requestPaciente.setObservaciones(request.getObservaciones());
+            requestPaciente.setDireccion(request.getDireccion());
+            //requestPaciente.setCiudad(request.getCiudad());
+            requestPaciente.setTelefono(request.getTelefono());
+            requestPaciente.setEmail(request.getEmail());
+            
+            //requestPaciente.setCentroMedico(request.getCentro);
+            //requestPaciente.setTutorResponsable(request.se);
+            //requestPaciente.set
+            //requestPaciente.setParentescoTutor(request.getParentescoTutor());
+            
+
+            pacienteService.crear("Bearer " + response.getAccessToken(), requestPaciente);
+        }
+
+        return response;
+    
     }
 
     public String refresh(RefreshRequest request) {
         return restTemplate.postForObject(
                 gatewayUrl + "/auth/refresh",
                 request,
-                String.class
-        );
+                String.class);
     }
 
     public String logout(LogoutRequest request) {
         return restTemplate.postForObject(
                 gatewayUrl + "/auth/logout",
                 request,
-                String.class
-        );
+                String.class);
+    }
+
+    public Object obtenerPacientePorRut(
+            String rut,
+            String token) {
+
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.setBearerAuth(token);
+
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<Object> response = restTemplate.exchange(
+                gatewayUrl +
+                        "/pacientes/rut/" + rut,
+                HttpMethod.GET,
+                entity,
+                Object.class);
+
+        return response.getBody();
     }
 
     public String validate(String token) {
@@ -101,8 +164,7 @@ public class AuthService {
                     url,
                     HttpMethod.GET,
                     entity,
-                    String.class
-            );
+                    String.class);
 
             return response.getBody();
 
@@ -112,8 +174,7 @@ public class AuthService {
 
                 ObjectMapper mapper = new ObjectMapper();
 
-                Map<String, Object> error =
-                        mapper.readValue(e.getResponseBodyAsString(), Map.class);
+                Map<String, Object> error = mapper.readValue(e.getResponseBodyAsString(), Map.class);
 
                 Map<String, Object> response = new HashMap<>();
 
@@ -122,7 +183,6 @@ public class AuthService {
                 response.put("data", true);
                 response.put("timestamp", LocalDateTime.now().toString());
                 response.put("errorCode", null);
-                
 
                 return mapper.writeValueAsString(response);
 
@@ -136,7 +196,6 @@ public class AuthService {
     public String health() {
         return restTemplate.getForObject(
                 gatewayUrl + "/auth/health",
-                String.class
-        );
+                String.class);
     }
 }

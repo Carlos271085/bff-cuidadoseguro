@@ -27,34 +27,31 @@ public class PacienteService {
 
         HttpHeaders headers = new HttpHeaders();
 
-        headers.setBearerAuth(token);
+        headers.set("Authorization", token);
 
         return headers;
     }
 
-    public ResponseEntity<?> buscarPorRut(String token,String rut) {
+    public ResponseEntity<?> buscarPorRut(String token, String rut) {
 
         HttpHeaders headers = buildHeaders(token);
 
         HttpEntity<Void> entity = new HttpEntity<>(headers);
 
         try {
-
             return restTemplate.exchange(
-                    gatewayUrl + "/buscarRut?rut=" + rut,
+                    gatewayUrl + "/rut/" + rut,
                     HttpMethod.GET,
                     entity,
-                    String.class
-            );
-
+                    String.class);
+            
         } catch (HttpClientErrorException e) {
 
             try {
 
                 ObjectMapper mapper = new ObjectMapper();
 
-                Map<String, Object> errorBody =
-                        mapper.readValue(e.getResponseBodyAsString(), Map.class);
+                Map<String, Object> errorBody = mapper.readValue(e.getResponseBodyAsString(), Map.class);
 
                 String message = (String) errorBody.get("message");
 
@@ -83,8 +80,7 @@ public class PacienteService {
                     gatewayUrl + "/pacientes",
                     HttpMethod.GET,
                     entity,
-                    String.class
-            );
+                    String.class);
 
         } catch (HttpClientErrorException e) {
 
@@ -92,8 +88,7 @@ public class PacienteService {
 
                 ObjectMapper mapper = new ObjectMapper();
 
-                Map<String, Object> errorBody =
-                        mapper.readValue(e.getResponseBodyAsString(), Map.class);
+                Map<String, Object> errorBody = mapper.readValue(e.getResponseBodyAsString(), Map.class);
 
                 String message = (String) errorBody.get("message");
 
@@ -110,11 +105,10 @@ public class PacienteService {
         }
     }
 
-    
     public PacienteDto obtener(String token, Long id) {
         HttpHeaders headers = new HttpHeaders();
         if (token != null) {
-            headers.set("Authorization", "Bearer "+token);
+            headers.set("Authorization", "Bearer " + token);
         }
 
         HttpEntity<Void> entity = new HttpEntity<>(headers);
@@ -124,12 +118,12 @@ public class PacienteService {
                     gatewayUrl + "/pacientes/" + id,
                     HttpMethod.GET,
                     entity,
-                    PacienteDto.class
-            );
+                    PacienteDto.class);
 
             return response.getBody();
         } catch (HttpClientErrorException e) {
-            throw new RuntimeException("Error calling gateway: " + e.getStatusCode() + " " + e.getResponseBodyAsString());
+            throw new RuntimeException(
+                    "Error calling gateway: " + e.getStatusCode() + " " + e.getResponseBodyAsString());
         }
     }
 
@@ -143,12 +137,12 @@ public class PacienteService {
                     gatewayUrl + "/pacientes",
                     HttpMethod.POST,
                     entity,
-                    PacienteDto.class
-            );
+                    PacienteDto.class);
 
             return response.getBody();
         } catch (HttpClientErrorException e) {
-            throw new RuntimeException("Error calling gateway: " + e.getStatusCode() + " " + e.getResponseBodyAsString());
+            throw new RuntimeException(
+                    "Error calling gateway: " + e.getStatusCode() + " " + e.getResponseBodyAsString());
         }
     }
 
@@ -162,18 +156,19 @@ public class PacienteService {
                     gatewayUrl + "/pacientes/" + id,
                     HttpMethod.PUT,
                     entity,
-                    PacienteDto.class
-            );
+                    PacienteDto.class);
 
             return response.getBody();
         } catch (HttpClientErrorException e) {
-            throw new RuntimeException("Error calling gateway: " + e.getStatusCode() + " " + e.getResponseBodyAsString());
+            throw new RuntimeException(
+                    "Error calling gateway: " + e.getStatusCode() + " " + e.getResponseBodyAsString());
         }
     }
+
     public void eliminar(String token, Long id) {
         HttpHeaders headers = new HttpHeaders();
         if (token != null) {
-            headers.set("Authorization", "Bearer "+token);
+            headers.set("Authorization", "Bearer " + token);
         }
 
         HttpEntity<Void> entity = new HttpEntity<>(headers);
@@ -183,10 +178,10 @@ public class PacienteService {
                     gatewayUrl + "/pacientes/" + id,
                     HttpMethod.DELETE,
                     entity,
-                    Void.class
-            );
+                    Void.class);
         } catch (HttpClientErrorException e) {
-            throw new RuntimeException("Error calling gateway: " + e.getStatusCode() + " " + e.getResponseBodyAsString());
+            throw new RuntimeException(
+                    "Error calling gateway: " + e.getStatusCode() + " " + e.getResponseBodyAsString());
         }
     }
 }
