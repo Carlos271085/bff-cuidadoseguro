@@ -25,7 +25,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest request) {
         return ResponseEntity.ok(authService.register(request));
     }
 
@@ -51,4 +51,22 @@ public class AuthController {
     public ResponseEntity<String> health() {
         return ResponseEntity.ok(authService.health());
     }
+
+    @GetMapping("/pacientes/rut/{rut}")
+public ResponseEntity<?> obtenerPacientePorRut(
+        @PathVariable String rut,
+        @RequestHeader("Authorization")
+        String authHeader
+) {
+
+    String token =
+            authHeader.replace("Bearer ", "");
+
+    return ResponseEntity.ok(
+            authService.obtenerPacientePorRut(
+                    rut,
+                    token
+            )
+    );
+}
 }
