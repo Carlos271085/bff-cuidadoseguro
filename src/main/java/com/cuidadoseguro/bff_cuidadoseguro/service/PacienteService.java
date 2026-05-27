@@ -27,9 +27,6 @@ public class PacienteService {
 
         HttpHeaders headers = new HttpHeaders();
 
-        System.out.println("TOKEN BFF:");
-        System.out.println(token);
-
         headers.set("Authorization", token);
 
         return headers;
@@ -42,6 +39,7 @@ public class PacienteService {
         HttpEntity<Void> entity = new HttpEntity<>(headers);
 
         try {
+
             return restTemplate.exchange(
                     gatewayUrl + "/pacientes/rut/" + rut,
                     HttpMethod.GET,
