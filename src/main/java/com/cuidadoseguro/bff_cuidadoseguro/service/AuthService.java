@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -24,20 +23,8 @@ public class AuthService {
 
     private final RestTemplate restTemplate;
 
-    @Autowired
-    private PacienteService pacienteService;
-
     @Value("${gateway.url}")
     private String gatewayUrl;
-
-    private HttpHeaders buildHeaders(String token) {
-
-        HttpHeaders headers = new HttpHeaders();
-
-        headers.set("Authorization", token);
-
-        return headers;
-    }
 
     public AuthService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
@@ -72,47 +59,11 @@ public class AuthService {
         return response.getBody();
     }
 
-    public RegisterResponse register(RegisterRequest request) {
-                
- 
-        RegisterResponse response = restTemplate.postForObject(
+    public String register(RegisterRequest request) {
+        return restTemplate.postForObject(
                 gatewayUrl + "/auth/register",
                 request,
-                RegisterResponse.class
-        );
-
-        HttpHeaders headers = buildHeaders(response.getAccessToken());
-
-        HttpEntity<Void> entity = new HttpEntity<>(headers);
-
-
-        if (response.getUserInfo().getTipoUsuario().equalsIgnoreCase("PACIENTE")){
-            PacienteDto requestPaciente = new PacienteDto();
-            requestPaciente.setRut(request.getNumeroDocumento());
-            requestPaciente.setNombre(request.getNombres());
-            requestPaciente.setApellido(request.getApellidos());
-            requestPaciente.setFechaNacimiento(request.getFechaNacimiento());
-            requestPaciente.setGenero(request.getGenero());
-            
-            requestPaciente.setAlergias(request.getAlergias());
-            
-            //requestPaciente.setObservaciones(request.getObservaciones());
-            requestPaciente.setDireccion(request.getDireccion());
-            //requestPaciente.setCiudad(request.getCiudad());
-            requestPaciente.setTelefono(request.getTelefono());
-            requestPaciente.setEmail(request.getEmail());
-            
-            //requestPaciente.setCentroMedico(request.getCentro);
-            //requestPaciente.setTutorResponsable(request.se);
-            //requestPaciente.set
-            //requestPaciente.setParentescoTutor(request.getParentescoTutor());
-            
-
-            pacienteService.crear("Bearer " + response.getAccessToken(), requestPaciente);
-        }
-
-        return response;
-    
+                String.class);
     }
 
     public String refresh(RefreshRequest request) {
