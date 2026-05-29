@@ -25,28 +25,44 @@ public class MedicamentoService {
     private final String BASE_PATH = "/medicamentos";
 
     public List<MedicamentoDto> listar(String token) {
+
+        System.out.println("TOKEN ORIGINAL: " + token);
+
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(token);
 
-        HttpEntity<Void> entity = new HttpEntity<>(headers);
-
-        ResponseEntity<MedicamentoDto[]> response = restTemplate.exchange(
-                gatewayUrl + BASE_PATH,
-                HttpMethod.GET,
-                entity,
-                MedicamentoDto[].class
+        headers.setBearerAuth(
+                token.replace("Bearer ", "")
         );
+
+        System.out.println("AUTH HEADER: " +
+                headers.getFirst("Authorization"));
+
+        HttpEntity<Void> entity =
+                new HttpEntity<>(headers);
+
+        ResponseEntity<MedicamentoDto[]> response =
+                restTemplate.exchange(
+                        gatewayUrl + BASE_PATH,
+                        HttpMethod.GET,
+                        entity,
+                        MedicamentoDto[].class
+                );
 
         return response.getBody() != null
                 ? Arrays.asList(response.getBody())
                 : List.of();
     }
 
-    public MedicamentoDto guardar(String token,MedicamentoDto MedicamentoDto) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(token);
+    public MedicamentoDto guardar(String token, MedicamentoDto medicamentoDto) {
 
-        HttpEntity<MedicamentoDto> entity = new HttpEntity<>(MedicamentoDto, headers);
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.setBearerAuth(
+                token.replaceAll("Bearer ", "")
+        );
+
+        HttpEntity<MedicamentoDto> entity =
+                new HttpEntity<>(medicamentoDto, headers);
 
         return restTemplate.exchange(
                 gatewayUrl + BASE_PATH,
