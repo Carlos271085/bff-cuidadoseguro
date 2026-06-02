@@ -53,4 +53,18 @@ public class FichaClinicaService {
         );
         return response.getBody();
     }
+    public FichaClinicaDto actualizar(String token, String rut, FichaClinicaDto ficha) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+
+        HttpEntity<FichaClinicaDto> entity = new HttpEntity<>(ficha, headers);
+
+        ResponseEntity<FichaClinicaDto> response = restTemplate.exchange(
+                gatewayUrl + BASE_PATH + "/rut/" + rut,
+                HttpMethod.PUT,
+                entity,
+                FichaClinicaDto.class
+        );
+        return response.getBody();
+    }
 }
