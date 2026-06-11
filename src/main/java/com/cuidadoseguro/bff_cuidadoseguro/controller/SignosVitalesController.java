@@ -34,4 +34,11 @@ public class SignosVitalesController {
     public void eliminar(@RequestHeader("Authorization") String token, @PathVariable Long id) {
         service.eliminar(token, id);
     }
+
+    @GetMapping("/ficha/{fichaId}")
+    public List<SignosVitalesDto> listarPorFicha(
+        @PathVariable Long fichaId) {
+
+        return service.listarPorFicha(fichaId);
+    }
 }

@@ -24,10 +24,4 @@ public class FichaClinicaController {
     public FichaClinicaDto guardar(@RequestHeader("Authorization") String token, @RequestBody FichaClinicaDto ficha) {
         return service.guardar(token, ficha);
     }
-    
-    @PutMapping("/rut/{rutPaciente}")
-    public FichaClinicaDto actualizar(@RequestHeader("Authorization") String token, 
-    @PathVariable("rutPaciente") String rut, @RequestBody FichaClinicaDto ficha) {
-        return service.actualizar(token, rut, ficha);
-    }
 }
