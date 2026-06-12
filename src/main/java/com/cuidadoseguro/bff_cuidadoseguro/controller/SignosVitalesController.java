@@ -20,9 +20,9 @@ public class SignosVitalesController {
         return service.listarTodos(token);
     }
 
-    @PostMapping
-    public SignosVitalesDto guardar(@RequestHeader("Authorization") String token, @RequestBody SignosVitalesDto SignosVitalesDto) {
-        return service.guardar(token, SignosVitalesDto);
+    @PostMapping("/{fichaId}")
+    public SignosVitalesDto guardar(@RequestHeader("Authorization") String token, @PathVariable Long fichaId, @RequestBody SignosVitalesDto SignosVitalesDto) {
+        return service.guardar(token, fichaId, SignosVitalesDto);
     }
 
     @GetMapping("/{id}")
@@ -33,5 +33,10 @@ public class SignosVitalesController {
     @DeleteMapping("/{id}")
     public void eliminar(@RequestHeader("Authorization") String token, @PathVariable Long id) {
         service.eliminar(token, id);
+    }
+
+    @GetMapping("/ficha/{fichaId}")
+    public List<SignosVitalesDto> listarPorFicha(@RequestHeader("Authorization") String token, @PathVariable Long fichaId) {
+        return service.listarPorFicha(token, fichaId);
     }
 }

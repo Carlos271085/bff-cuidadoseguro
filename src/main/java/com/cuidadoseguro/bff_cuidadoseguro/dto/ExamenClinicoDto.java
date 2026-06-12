@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class ExamenClinicoDto{
 
     private Long id;
@@ -20,5 +21,6 @@ public class ExamenClinicoDto{
 
     private String observacion;
 
+    private FichaClinicaDto ficha;
 
 }

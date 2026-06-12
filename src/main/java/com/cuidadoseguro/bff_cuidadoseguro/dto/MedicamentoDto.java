@@ -16,6 +16,9 @@ public class MedicamentoDto {
     private String dosis;
     private String frecuencia;
     private String observaciones;
+    private Integer diasTratamiento;
 
-    private Long ficha;
+    private String profesional;
+
+    private FichaClinicaDto ficha;
 }
