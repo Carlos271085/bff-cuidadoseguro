@@ -84,4 +84,19 @@ public class IndicacionMedicaService {
                 Void.class
         );
     }
+
+    public IndicacionMedicaDto actualizar(String token, Long id, IndicacionMedicaDto indicacion) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+
+        HttpEntity<IndicacionMedicaDto> entity = new HttpEntity<>(indicacion, headers);
+
+        ResponseEntity<IndicacionMedicaDto> response = restTemplate.exchange(
+                gatewayUrl + BASE_PATH + "/" + id,
+                HttpMethod.PUT,
+                entity,
+                IndicacionMedicaDto.class
+        );
+        return response.getBody();
+    }
 }

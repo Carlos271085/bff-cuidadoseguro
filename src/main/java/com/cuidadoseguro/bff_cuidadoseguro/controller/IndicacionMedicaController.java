@@ -34,4 +34,9 @@ public class IndicacionMedicaController {
     public void eliminar(@RequestHeader("Authorization") String token,@PathVariable Long id) {
         service.eliminar(token, id);
     }
+
+    @PutMapping("/{id}")
+    public IndicacionMedicaDto actualizar(@RequestHeader("Authorization") String token,@PathVariable Long id, @RequestBody IndicacionMedicaDto indicacion) {
+        return service.actualizar(token, id, indicacion);
+    }
 }

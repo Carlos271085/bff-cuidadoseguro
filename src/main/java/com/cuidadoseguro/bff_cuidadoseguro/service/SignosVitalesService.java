@@ -56,14 +56,19 @@ public class SignosVitalesService {
             : List.of();
 }
 
-    public SignosVitalesDto guardar(String token, SignosVitalesDto SignosVitalesDto) {
+    public SignosVitalesDto guardar(
+        String token,
+        Long id,
+        SignosVitalesDto signosVitalesDto) {
         HttpHeaders headers = new HttpHeaders();
+
         headers.setBearerAuth(token);
 
-        HttpEntity<SignosVitalesDto> entity = new HttpEntity<>(SignosVitalesDto, headers);
+        HttpEntity<SignosVitalesDto> entity =
+                new HttpEntity<>(signosVitalesDto, headers);
 
         return restTemplate.exchange(
-                gatewayUrl + BASE_PATH,
+                gatewayUrl + BASE_PATH + "/" + id,
                 HttpMethod.POST,
                 entity,
                 SignosVitalesDto.class
@@ -96,5 +101,23 @@ public class SignosVitalesService {
                 entity,
                 Void.class
         );
+    }
+
+    public List<SignosVitalesDto> listarPorFicha(String token, Long fichaId) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<SignosVitalesDto[]> response = restTemplate.exchange(
+                gatewayUrl + BASE_PATH + "/ficha/" + fichaId,
+                HttpMethod.GET,
+                entity,
+                SignosVitalesDto[].class
+        );
+
+        return response.getBody() != null
+                ? Arrays.asList(response.getBody())
+                : List.of();
     }
 }

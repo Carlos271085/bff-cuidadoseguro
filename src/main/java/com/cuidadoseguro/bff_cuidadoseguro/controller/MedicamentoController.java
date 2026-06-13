@@ -1,5 +1,6 @@
 package com.cuidadoseguro.bff_cuidadoseguro.controller;
 
+import org.springframework.security.access.method.P;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -24,5 +25,10 @@ public class MedicamentoController {
     @PostMapping
     public MedicamentoDto guardar(@RequestHeader("Authorization") String token, @RequestBody MedicamentoDto MedicamentoDto) {
         return service.guardar(token, MedicamentoDto);
+    }
+
+    @PutMapping("/{id}")
+    public MedicamentoDto actualizar(@RequestHeader("Authorization") String token, @PathVariable Long id, @RequestBody MedicamentoDto MedicamentoDto) {
+        return service.actualizar(token, id, MedicamentoDto);
     }
 }

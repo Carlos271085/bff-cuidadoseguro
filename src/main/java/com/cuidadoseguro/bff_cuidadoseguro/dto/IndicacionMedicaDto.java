@@ -17,4 +17,6 @@ public class IndicacionMedicaDto {
 
     private String indicacion;
 
+    private FichaClinicaDto ficha;
+
 }
