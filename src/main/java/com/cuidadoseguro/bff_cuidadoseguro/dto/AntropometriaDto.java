@@ -14,4 +14,5 @@ public class AntropometriaDto {
     private String fechaRegistro;
 
     private Long fichaId;
+    private String profesional;
 }

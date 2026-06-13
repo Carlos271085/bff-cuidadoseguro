@@ -21,6 +21,5 @@ public class ExamenClinicoDto{
 
     private String observacion;
 
-    private FichaClinicaDto ficha;
-
+    private Long ficha;
 }

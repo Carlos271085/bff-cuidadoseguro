@@ -1,9 +1,9 @@
 package com.cuidadoseguro.bff_cuidadoseguro.service;
 
 import com.cuidadoseguro.bff_cuidadoseguro.dto.ExamenClinicoDto;
-import com.cuidadoseguro.bff_cuidadoseguro.dto.SignosVitalesDto;
 
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -28,61 +28,97 @@ public class ExamenClinicoService {
         HttpHeaders headers = new HttpHeaders();
 
         headers.setBearerAuth(token);
+
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+
         return headers;
     }
 
-
-    
     public List<ExamenClinicoDto> listarTodos(String token) {
 
-    HttpHeaders headers = new HttpHeaders();
+        HttpEntity<Void> entity =
+                new HttpEntity<>(buildHeaders(token));
 
-    HttpEntity<Void> entity = new HttpEntity<>(buildHeaders(token));
+        System.out.println("TOKEN: " + token);
 
+        ResponseEntity<ExamenClinicoDto[]> response =
+                restTemplate.exchange(
+                        gatewayUrl + BASE_PATH,
+                        HttpMethod.GET,
+                        entity,
+                        ExamenClinicoDto[].class
+                );
 
-    System.out.println("TOKEN: " + token);
-    ResponseEntity<ExamenClinicoDto[]> response =
-            restTemplate.exchange(
-                    gatewayUrl + BASE_PATH,
-                    HttpMethod.GET,
-                    entity,
-                    ExamenClinicoDto[].class
-            );
+        return Arrays.asList(response.getBody());
+    }
 
-    return Arrays.asList(response.getBody());
-}
+    public ExamenClinicoDto actualizar(
+            String token,
+            Long id,
+            ExamenClinicoDto examen
+    ) {
 
+        HttpEntity<ExamenClinicoDto> entity =
+                new HttpEntity<>(examen, buildHeaders(token));
 
-
-    public ExamenClinicoDto guardar(String token, ExamenClinicoDto examen) {
-        HttpEntity<ExamenClinicoDto> entity = new HttpEntity<>(examen, buildHeaders(token));
-
-        ResponseEntity<ExamenClinicoDto> response = restTemplate.exchange(
-                gatewayUrl + BASE_PATH,
-                HttpMethod.POST,
-                entity,
-                ExamenClinicoDto.class
-        );
+        ResponseEntity<ExamenClinicoDto> response =
+                restTemplate.exchange(
+                        gatewayUrl + BASE_PATH + "/" + id,
+                        HttpMethod.PUT,
+                        entity,
+                        ExamenClinicoDto.class
+                );
 
         return response.getBody();
     }
 
-    public ExamenClinicoDto buscarPorId(String token, Long id) {
-        HttpEntity<Void> entity = new HttpEntity<>(buildHeaders(token));
+    public ExamenClinicoDto guardar(
+            String token,
+            ExamenClinicoDto examen
+    ) {
 
-        ResponseEntity<ExamenClinicoDto> response = restTemplate.exchange(
-                gatewayUrl + BASE_PATH + "/" + id,
-                HttpMethod.GET,
-                entity,
-                ExamenClinicoDto.class
-        );
+        HttpEntity<ExamenClinicoDto> entity =
+                new HttpEntity<>(examen, buildHeaders(token));
+
+        ResponseEntity<ExamenClinicoDto> response =
+                restTemplate.exchange(
+                        gatewayUrl + BASE_PATH,
+                        HttpMethod.POST,
+                        entity,
+                        ExamenClinicoDto.class
+                );
 
         return response.getBody();
     }
 
+    public ExamenClinicoDto buscarPorId(
+            String token,
+            Long id
+    ) {
 
-    public void eliminar(String token, Long id) {
-        HttpEntity<Void> entity = new HttpEntity<>(buildHeaders(token));
+        HttpEntity<Void> entity =
+                new HttpEntity<>(buildHeaders(token));
+
+        ResponseEntity<ExamenClinicoDto> response =
+                restTemplate.exchange(
+                        gatewayUrl + BASE_PATH + "/" + id,
+                        HttpMethod.GET,
+                        entity,
+                        ExamenClinicoDto.class
+                );
+
+        return response.getBody();
+    }
+
+    public void eliminar(
+            String token,
+            Long id
+    ) {
+
+        HttpEntity<Void> entity =
+                new HttpEntity<>(buildHeaders(token));
 
         restTemplate.exchange(
                 gatewayUrl + BASE_PATH + "/" + id,

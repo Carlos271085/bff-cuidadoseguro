@@ -4,6 +4,7 @@ import com.cuidadoseguro.bff_cuidadoseguro.dto.ExamenClinicoDto;
 import com.cuidadoseguro.bff_cuidadoseguro.service.ExamenClinicoService;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +29,15 @@ public class ExamenClinicoController {
         return service.guardar(token, examen);
     }
 
+    @PutMapping("/{id}")
+    public ExamenClinicoDto actualizar(
+            @RequestHeader("Authorization") String token,
+            @PathVariable Long id,
+            @RequestBody ExamenClinicoDto examen
+    ) {
+
+        return service.actualizar(token, id, examen);
+    }
     @GetMapping("/{id}")
     public ExamenClinicoDto buscarPorId(@RequestHeader("Authorization") String token, @PathVariable Long id) {
         return service.buscarPorId(token, id);
