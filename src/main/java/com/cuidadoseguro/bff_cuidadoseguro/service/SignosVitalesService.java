@@ -56,14 +56,18 @@ public class SignosVitalesService {
             : List.of();
 }
 
-    public SignosVitalesDto guardar(String token, SignosVitalesDto SignosVitalesDto) {
+    public SignosVitalesDto guardar(
+        String token, 
+        Long fichaId, 
+        SignosVitalesDto signosVitalesDto) {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
 
-        HttpEntity<SignosVitalesDto> entity = new HttpEntity<>(SignosVitalesDto, headers);
+        HttpEntity<SignosVitalesDto> entity = 
+        new HttpEntity<>(signosVitalesDto, headers);
 
         return restTemplate.exchange(
-                gatewayUrl + BASE_PATH,
+                gatewayUrl + BASE_PATH + "/" + fichaId,
                 HttpMethod.POST,
                 entity,
                 SignosVitalesDto.class

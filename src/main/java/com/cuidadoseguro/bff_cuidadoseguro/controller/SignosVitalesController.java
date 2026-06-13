@@ -20,9 +20,14 @@ public class SignosVitalesController {
         return service.listarTodos(token);
     }
 
-    @PostMapping
-    public SignosVitalesDto guardar(@RequestHeader("Authorization") String token, @RequestBody SignosVitalesDto SignosVitalesDto) {
-        return service.guardar(token, SignosVitalesDto);
+    @PostMapping("/{fichaId}")
+    public SignosVitalesDto guardar(@RequestHeader("Authorization") String token, 
+    @PathVariable Long fichaId, 
+    @RequestBody SignosVitalesDto signosVitalesDto) {
+        return service.guardar(
+            token, 
+            fichaId,
+            signosVitalesDto);
     }
 
     @GetMapping("/{id}")
