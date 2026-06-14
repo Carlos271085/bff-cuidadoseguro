@@ -1,5 +1,7 @@
 package com.cuidadoseguro.bff_cuidadoseguro.dto;
 
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,13 +15,15 @@ public class ExamenClinicoDto{
 
     private String nombre;
 
-    private String fecha;
+    private LocalDateTime fechaRegistro;
 
     private String estado;
 
     private String profesional;
 
     private String observacion;
+
+    private String resultado;
 
     private Long ficha;
 }

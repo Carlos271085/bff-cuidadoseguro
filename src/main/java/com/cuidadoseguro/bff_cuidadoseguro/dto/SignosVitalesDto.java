@@ -23,7 +23,7 @@ public class SignosVitalesDto {
 
     private String profesional;
 
-    private LocalDateTime fecha;
+    private LocalDateTime fechaRegistro;
     private FichaClinicaDto ficha;
 
 }
