@@ -20,5 +20,5 @@ public class MedicamentoDto {
 
     private String profesional;
 
-    private FichaClinicaDto ficha;
+    private Long ficha;
 }
