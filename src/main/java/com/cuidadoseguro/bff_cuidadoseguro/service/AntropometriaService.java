@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
-
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -15,59 +14,59 @@ import com.cuidadoseguro.bff_cuidadoseguro.dto.AntropometriaDto;
 @Service
 public class AntropometriaService {
 
-    private final RestTemplate restTemplate;
+        private final RestTemplate restTemplate;
 
-    @Value("${datosmedicos.url}")
-    private String datosMedicosUrl;
+        @Value("${datosmedicos.url}")
+        private String datosMedicosUrl;
 
-    public AntropometriaService(
-            RestTemplate restTemplate) {
+        public AntropometriaService(
+                        RestTemplate restTemplate) {
 
-        this.restTemplate = restTemplate;
-    }
+                this.restTemplate = restTemplate;
+        }
 
-    public AntropometriaDto guardar(
-            Long fichaId,
-            AntropometriaDto dto,
-            String token) {
+        public AntropometriaDto guardar(
+                        Long fichaId,
+                        AntropometriaDto dto,
+                        String token) {
 
-        HttpHeaders headers = new HttpHeaders();
+                HttpHeaders headers = new HttpHeaders();
 
-        headers.setBearerAuth(token);
+                headers.setBearerAuth(token);
 
-        HttpEntity<AntropometriaDto> entity =
-                new HttpEntity<>(dto, headers);
+                headers.setContentType(MediaType.APPLICATION_JSON);
 
-        ResponseEntity<AntropometriaDto> response =
-                restTemplate.exchange(
-                        datosMedicosUrl +
-                                "/antropometrias/" + fichaId,
-                        HttpMethod.POST,
-                        entity,
-                        AntropometriaDto.class);
+                headers.setAccept(List.of(MediaType.APPLICATION_JSON));
 
-        return response.getBody();
-    }
+                HttpEntity<AntropometriaDto> entity = new HttpEntity<>(dto, headers);
 
-    public List<AntropometriaDto> listar(
-            Long fichaId,
-            String token) {
+                ResponseEntity<AntropometriaDto> response = restTemplate.exchange(
+                                datosMedicosUrl +
+                                                "/antropometrias/" + fichaId,
+                                HttpMethod.POST,
+                                entity,
+                                AntropometriaDto.class);
 
-        HttpHeaders headers = new HttpHeaders();
+                return response.getBody();
+        }
 
-        headers.setBearerAuth(token);
+        public List<AntropometriaDto> listar(
+                        Long fichaId,
+                        String token) {
 
-        HttpEntity<Void> entity =
-                new HttpEntity<>(headers);
+                HttpHeaders headers = new HttpHeaders();
 
-        ResponseEntity<AntropometriaDto[]> response =
-                restTemplate.exchange(
-                        datosMedicosUrl +
-                                "/antropometrias/" + fichaId,
-                        HttpMethod.GET,
-                        entity,
-                        AntropometriaDto[].class);
+                headers.setBearerAuth(token);
 
-        return Arrays.asList(response.getBody());
-    }
+                HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+                ResponseEntity<AntropometriaDto[]> response = restTemplate.exchange(
+                                datosMedicosUrl +
+                                                "/antropometrias/" + fichaId,
+                                HttpMethod.GET,
+                                entity,
+                                AntropometriaDto[].class);
+
+                return Arrays.asList(response.getBody());
+        }
 }
