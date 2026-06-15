@@ -17,8 +17,7 @@ public class AntropometriaController {
 
     private final AntropometriaService service;
 
-    @PostMapping(value = "/{fichaId}",
-    consumes = "application/json")
+    @PostMapping(value = "/{fichaId}")
     public AntropometriaDto guardar(
             @PathVariable Long fichaId,
             @RequestBody AntropometriaDto dto,
