@@ -3,7 +3,7 @@ package com.cuidadoseguro.bff_cuidadoseguro.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -17,6 +17,7 @@ public class MedicamentoDto {
     private String frecuencia;
     private String observaciones;
     private Integer diasTratamiento;
+    private LocalDateTime fechaRegistro;
 
     private String profesional;
 
