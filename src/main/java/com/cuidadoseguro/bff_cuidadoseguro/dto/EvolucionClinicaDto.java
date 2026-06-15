@@ -8,6 +8,7 @@ public class EvolucionClinicaDto {
 
     private Long id;
     private LocalDateTime fechaRegistro;
+    private String profesional;
     private String descripcion;
     private String observaciones;
     private Long pacienteId;
