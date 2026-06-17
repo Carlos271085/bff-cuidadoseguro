@@ -17,7 +17,7 @@ public class AntropometriaController {
 
     private final AntropometriaService service;
 
-    @PostMapping("/{fichaId}")
+    @PostMapping(value = "/{fichaId}")
     public AntropometriaDto guardar(
             @PathVariable Long fichaId,
             @RequestBody AntropometriaDto dto,

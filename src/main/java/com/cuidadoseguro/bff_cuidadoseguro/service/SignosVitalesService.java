@@ -61,6 +61,7 @@ public class SignosVitalesService {
         Long fichaId, 
         SignosVitalesDto signosVitalesDto) {
         HttpHeaders headers = new HttpHeaders();
+
         headers.setBearerAuth(token);
 
         HttpEntity<SignosVitalesDto> entity = 
@@ -100,5 +101,23 @@ public class SignosVitalesService {
                 entity,
                 Void.class
         );
+    }
+
+    public List<SignosVitalesDto> listarPorFicha(String token, Long fichaId) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<SignosVitalesDto[]> response = restTemplate.exchange(
+                gatewayUrl + BASE_PATH + "/ficha/" + fichaId,
+                HttpMethod.GET,
+                entity,
+                SignosVitalesDto[].class
+        );
+
+        return response.getBody() != null
+                ? Arrays.asList(response.getBody())
+                : List.of();
     }
 }

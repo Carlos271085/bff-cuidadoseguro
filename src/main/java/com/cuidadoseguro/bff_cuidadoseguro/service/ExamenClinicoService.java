@@ -1,9 +1,9 @@
 package com.cuidadoseguro.bff_cuidadoseguro.service;
 
 import com.cuidadoseguro.bff_cuidadoseguro.dto.ExamenClinicoDto;
-import com.cuidadoseguro.bff_cuidadoseguro.dto.SignosVitalesDto;
 
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -16,79 +16,109 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ExamenClinicoService {
 
-    private final RestTemplate restTemplate;
+        private final RestTemplate restTemplate;
 
-    @Value("${gateway.url}")
-    private String gatewayUrl;
+        @Value("${gateway.url}")
+        private String gatewayUrl;
 
-    private final String BASE_PATH = "/examenes";
+        private final String BASE_PATH = "/examenes";
 
-    private HttpHeaders buildHeaders(String token) {
+        private HttpHeaders buildHeaders(String token) {
 
-        HttpHeaders headers = new HttpHeaders();
+                HttpHeaders headers = new HttpHeaders();
 
-        headers.setBearerAuth(token);
-        return headers;
-    }
+                headers.setBearerAuth(token);
 
+                headers.setContentType(MediaType.APPLICATION_JSON);
 
-    
-    public List<ExamenClinicoDto> listarTodos(String token) {
+                headers.setAccept(List.of(MediaType.APPLICATION_JSON));
 
-    HttpHeaders headers = new HttpHeaders();
+                return headers;
+        }
 
-    HttpEntity<Void> entity = new HttpEntity<>(buildHeaders(token));
+        public List<ExamenClinicoDto> listarTodos(String token) {
 
+                HttpEntity<Void> entity = new HttpEntity<>(buildHeaders(token));
 
-    System.out.println("TOKEN: " + token);
-    ResponseEntity<ExamenClinicoDto[]> response =
-            restTemplate.exchange(
-                    gatewayUrl + BASE_PATH,
-                    HttpMethod.GET,
-                    entity,
-                    ExamenClinicoDto[].class
-            );
+                System.out.println("TOKEN: " + token);
 
-    return Arrays.asList(response.getBody());
-}
+                ResponseEntity<ExamenClinicoDto[]> response = restTemplate.exchange(
+                                gatewayUrl + BASE_PATH,
+                                HttpMethod.GET,
+                                entity,
+                                ExamenClinicoDto[].class);
 
+                return Arrays.asList(response.getBody());
+        }
 
+        public ExamenClinicoDto actualizar(
+                        String token,
+                        Long id,
+                        ExamenClinicoDto examen) {
 
-    public ExamenClinicoDto guardar(String token, ExamenClinicoDto examen) {
-        HttpEntity<ExamenClinicoDto> entity = new HttpEntity<>(examen, buildHeaders(token));
+                HttpEntity<ExamenClinicoDto> entity = new HttpEntity<>(examen, buildHeaders(token));
 
-        ResponseEntity<ExamenClinicoDto> response = restTemplate.exchange(
-                gatewayUrl + BASE_PATH,
-                HttpMethod.POST,
-                entity,
-                ExamenClinicoDto.class
-        );
+                try {
 
-        return response.getBody();
-    }
+                        System.out.println("=== DTO RECIBIDO EN BFF ===");
+                        System.out.println(examen);
 
-    public ExamenClinicoDto buscarPorId(String token, Long id) {
-        HttpEntity<Void> entity = new HttpEntity<>(buildHeaders(token));
+                        ResponseEntity<ExamenClinicoDto> response = restTemplate.exchange(
+                                        gatewayUrl + BASE_PATH + "/" + id,
+                                        HttpMethod.PUT,
+                                        entity,
+                                        ExamenClinicoDto.class);
 
-        ResponseEntity<ExamenClinicoDto> response = restTemplate.exchange(
-                gatewayUrl + BASE_PATH + "/" + id,
-                HttpMethod.GET,
-                entity,
-                ExamenClinicoDto.class
-        );
+                        return response.getBody();
 
-        return response.getBody();
-    }
+                } catch (Exception e) {
 
+                        e.printStackTrace();
 
-    public void eliminar(String token, Long id) {
-        HttpEntity<Void> entity = new HttpEntity<>(buildHeaders(token));
+                        throw e;
+                }
+        }
 
-        restTemplate.exchange(
-                gatewayUrl + BASE_PATH + "/" + id,
-                HttpMethod.DELETE,
-                entity,
-                Void.class
-        );
-    }
+        public ExamenClinicoDto guardar(
+                        String token,
+                        ExamenClinicoDto examen) {
+
+                HttpEntity<ExamenClinicoDto> entity = new HttpEntity<>(examen, buildHeaders(token));
+
+                ResponseEntity<ExamenClinicoDto> response = restTemplate.exchange(
+                                gatewayUrl + BASE_PATH,
+                                HttpMethod.POST,
+                                entity,
+                                ExamenClinicoDto.class);
+
+                return response.getBody();
+        }
+
+        public ExamenClinicoDto buscarPorId(
+                        String token,
+                        Long id) {
+
+                HttpEntity<Void> entity = new HttpEntity<>(buildHeaders(token));
+
+                ResponseEntity<ExamenClinicoDto> response = restTemplate.exchange(
+                                gatewayUrl + BASE_PATH + "/" + id,
+                                HttpMethod.GET,
+                                entity,
+                                ExamenClinicoDto.class);
+
+                return response.getBody();
+        }
+
+        public void eliminar(
+                        String token,
+                        Long id) {
+
+                HttpEntity<Void> entity = new HttpEntity<>(buildHeaders(token));
+
+                restTemplate.exchange(
+                                gatewayUrl + BASE_PATH + "/" + id,
+                                HttpMethod.DELETE,
+                                entity,
+                                Void.class);
+        }
 }

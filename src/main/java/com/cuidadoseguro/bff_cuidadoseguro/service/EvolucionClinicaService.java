@@ -80,4 +80,18 @@ public class EvolucionClinicaService {
                 Void.class
         );
     }
+
+        public EvolucionClinicaDto actualizar(String token, Long id, EvolucionClinicaDto evolucion) {
+            HttpEntity<EvolucionClinicaDto> entity =
+                    new HttpEntity<>(evolucion, buildHeaders(token));
+    
+            ResponseEntity<EvolucionClinicaDto> response = restTemplate.exchange(
+                    gatewayUrl + "/evoluciones/" + id,
+                    HttpMethod.PUT,
+                    entity,
+                    EvolucionClinicaDto.class
+            );
+    
+            return response.getBody();
+        }
 }

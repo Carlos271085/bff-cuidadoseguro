@@ -1,5 +1,7 @@
 package com.cuidadoseguro.bff_cuidadoseguro.dto;
 
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,7 +23,7 @@ public class SignosVitalesDto {
 
     private String profesional;
 
-    private String fecha;
+    private LocalDateTime fechaRegistro;
     private FichaClinicaDto ficha;
 
 }

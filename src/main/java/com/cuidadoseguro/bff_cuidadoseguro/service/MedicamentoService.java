@@ -71,4 +71,23 @@ public class MedicamentoService {
                 MedicamentoDto.class
         ).getBody();
     }
+
+        public MedicamentoDto actualizar(String token, Long id, MedicamentoDto medicamentoDto) {
+        
+                HttpHeaders headers = new HttpHeaders();
+        
+                headers.setBearerAuth(
+                        token.replaceAll("Bearer ", "")
+                );
+        
+                HttpEntity<MedicamentoDto> entity =
+                        new HttpEntity<>(medicamentoDto, headers);
+        
+                return restTemplate.exchange(
+                        gatewayUrl + BASE_PATH + "/" + id,
+                        HttpMethod.PUT,
+                        entity,
+                        MedicamentoDto.class
+                ).getBody();
+        }
 }

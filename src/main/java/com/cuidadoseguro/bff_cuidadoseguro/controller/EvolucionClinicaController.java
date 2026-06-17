@@ -6,6 +6,7 @@ import com.cuidadoseguro.bff_cuidadoseguro.service.EvolucionClinicaService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.method.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -48,4 +49,14 @@ public class EvolucionClinicaController {
         service.eliminar(token, id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<EvolucionClinicaDto> actualizar(
+            @RequestHeader("Authorization") String token,
+            @PathVariable Long id,
+            @RequestBody EvolucionClinicaDto evolucion
+    ) {
+        return ResponseEntity.ok(service.actualizar(token, id, evolucion));
+    }
+
 }

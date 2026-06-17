@@ -21,13 +21,8 @@ public class SignosVitalesController {
     }
 
     @PostMapping("/{fichaId}")
-    public SignosVitalesDto guardar(@RequestHeader("Authorization") String token, 
-    @PathVariable Long fichaId, 
-    @RequestBody SignosVitalesDto signosVitalesDto) {
-        return service.guardar(
-            token, 
-            fichaId,
-            signosVitalesDto);
+    public SignosVitalesDto guardar(@RequestHeader("Authorization") String token, @PathVariable Long fichaId, @RequestBody SignosVitalesDto SignosVitalesDto) {
+        return service.guardar(token, fichaId, SignosVitalesDto);
     }
 
     @GetMapping("/{id}")
@@ -41,9 +36,7 @@ public class SignosVitalesController {
     }
 
     @GetMapping("/ficha/{fichaId}")
-    public List<SignosVitalesDto> listarPorFicha(
-        @PathVariable Long fichaId) {
-
-        return service.listarPorFicha(fichaId);
+    public List<SignosVitalesDto> listarPorFicha(@RequestHeader("Authorization") String token, @PathVariable Long fichaId) {
+        return service.listarPorFicha(token, fichaId);
     }
 }
