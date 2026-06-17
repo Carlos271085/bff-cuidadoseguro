@@ -1,0 +1,8 @@
+services:
+  bff:
+    build: .
+    container_name: bff
+    ports:
+      - "8090:8090"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
