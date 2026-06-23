@@ -299,3 +299,6 @@ El sistema permite:
 * Escalar el sistema de forma modular
 
 Todo esto permite construir una solución escalable, segura y preparada para arquitecturas distribuidas modernas.
+
+## Despliegue
+Imagen disponible en Docker Hub
