@@ -2,12 +2,20 @@ name: CI/CD Pipeline BFF
 
 on:
   push:
-    branches:
-      - main
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+env:
+  IMAGE_NAME: bff-cuidadoseguro
+  SERVICE_PORT: 8090
 
 jobs:
-  build-and-push:
+  # ── 1. Build y Push imagen Docker ──────────────────────────────────────────
+  docker-build-push:
+    name: Docker Build & Push
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
 
     steps:
       - name: Checkout código
@@ -19,10 +27,45 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build y Push de la imagen
+      - name: Extraer metadata (tags)
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=sha,prefix=sha-,format=short
+            type=raw,value=latest
+
+      - name: Build y Push imagen
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/bff-cuidadoseguro:latest
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
+          cache-to: type=inline
+
+  # ── 2. Deploy a AWS ECS ─────────────────────────────────────────────────────
+  deploy-ecs:
+    name: Deploy a ECS
+    runs-on: ubuntu-latest
+    needs: docker-build-push
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+
+    steps:
+      - name: Configurar credenciales AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: us-east-1
+
+      - name: Forzar nuevo deploy en ECS
+        run: |
+          aws ecs update-service \
+            --cluster cluster-microservicio-datosmedico \
+            --service servicio-bff \
+            --force-new-deployment \
+            --region us-east-1
