@@ -1,5 +1,6 @@
 package com.cuidadoseguro.bff_cuidadoseguro.config;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.context.annotation.Bean;
@@ -13,32 +14,31 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 @Configuration
 public class CorsConfig {
 
-    @Bean
-    public CorsWebFilter corsWebFilter() {
+        @Bean
+        public CorsWebFilter corsWebFilter() {
 
-        CorsConfiguration config = new CorsConfiguration();
+                CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowCredentials(true);
+                config.setAllowCredentials(true);
 
-        config.setAllowedOrigins(List.of(
-                "http://localhost:5173"
-        ));
+                String origins = System.getenv().getOrDefault(
+                                "CORS_ALLOWED_ORIGINS",
+                                "http://localhost:5173");
+                config.setAllowedOrigins(Arrays.asList(origins.split(",")));
 
-        config.setAllowedMethods(List.of(
-                "GET",
-                "POST",
-                "PUT",
-                "DELETE",
-                "OPTIONS"
-        ));
+                config.setAllowedMethods(List.of(
+                                "GET",
+                                "POST",
+                                "PUT",
+                                "DELETE",
+                                "OPTIONS"));
 
-        config.setAllowedHeaders(List.of("*"));
+                config.setAllowedHeaders(List.of("*"));
 
-        UrlBasedCorsConfigurationSource source =
-                new UrlBasedCorsConfigurationSource();
+                UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 
-        source.registerCorsConfiguration("/**", config);
+                source.registerCorsConfiguration("/**", config);
 
-        return new CorsWebFilter(source);
-    }
+                return new CorsWebFilter(source);
+        }
 }
