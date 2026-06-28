@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
@@ -23,7 +24,8 @@ class DatosMedicosServiceTest {
     @InjectMocks
     private DatosMedicosService service;
 
-    private static final String GATEWAY_URL = "http://localhost:8080";
+    @Value("${gateway.url}")
+    private String GATEWAY_URL;
     private static final String TOKEN = "test-token";
 
     @BeforeEach

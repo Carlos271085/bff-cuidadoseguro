@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
@@ -26,7 +27,9 @@ class AntropometriaServiceTest {
     @InjectMocks
     private AntropometriaService antropometriaService;
 
-    private static final String DATOS_MEDICOS_URL = "http://localhost:8081";
+    
+    @Value("${datosmedicos.url}")
+    private String DATOS_MEDICOS_URL;
     private static final String TOKEN = "test-token";
 
     @BeforeEach
