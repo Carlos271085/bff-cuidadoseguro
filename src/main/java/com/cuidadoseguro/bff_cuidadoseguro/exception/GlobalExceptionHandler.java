@@ -12,7 +12,7 @@ import org.springframework.web.client.ResourceAccessException;
 
 /**
  * Sin este handler, cualquier fallo de los RestTemplate del BFF hacia el
- * gateway/otros microservicios (401/403/404/409/500/503, timeouts, DNS,
+ * los microservicios internos (401/403/404/409/500/503, timeouts, DNS,
  * conexión rechazada) se escapaba como excepción cruda hasta el manejador
  * por defecto de WebFlux (AbstractErrorWebExceptionHandler), que siempre
  * responde el mismo 500 genérico sin body útil:
@@ -28,7 +28,7 @@ import org.springframework.web.client.ResourceAccessException;
 public class GlobalExceptionHandler {
 
     /**
-     * El downstream (a través del gateway) respondió con un status de error
+     * El microservicio downstream respondió con un status de error
      * HTTP (4xx/5xx). RestTemplate lo convierte en esta excepción.
      * Reenviamos el mismo status code y el mismo body tal cual, porque los
      * servicios downstream (auth-service, datos-medicos-service, etc.) ya

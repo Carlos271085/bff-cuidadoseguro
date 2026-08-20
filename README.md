@@ -6,7 +6,23 @@ El Backend For Frontend (BFF) de **Cuidado Seguro** actúa como una capa interme
 
 Su principal función es centralizar las solicitudes realizadas por los clientes, aplicar reglas de seguridad, validar autenticación mediante JWT y enrutar correctamente las peticiones hacia los distintos microservicios de la arquitectura.
 
-Este componente fue desarrollado utilizando Spring Cloud Gateway bajo una arquitectura de microservicios moderna.
+El punto de entrada publico del sistema es **AWS API Gateway** (servicio administrado). El BFF es un servicio interno: solo recibe trafico desde AWS API Gateway y es el unico componente que conoce las URLs de los microservicios.
+
+```text
+Frontend React
+      |
+      v  HTTPS
+AWS API Gateway
+      |
+      v  HTTP/HTTPS (VPC Link -> ALB interno)
+     BFF
+      |
+      +---> MS Pacientes
+      +---> MS Datos Medicos
+      +---> MS Auth
+```
+
+El API Gateway propio (`api.gateway.cuidadoseguro`) fue retirado del flujo: el BFF ya no lo utiliza.
 
 ---
 
@@ -16,7 +32,6 @@ Este componente fue desarrollado utilizando Spring Cloud Gateway bajo una arquit
 
 * **Java 17**
 * **Spring Boot 3.2.5**
-* **Spring Cloud Gateway**
 * **Spring Security**
 * **Spring WebFlux**
 
@@ -36,7 +51,7 @@ Este componente fue desarrollado utilizando Spring Cloud Gateway bajo una arquit
 * **Docker**
 * **Arquitectura de Microservicios**
 * **Backend For Frontend (BFF)**
-* **API Gateway**
+* **AWS API Gateway** (entrada publica, servicio administrado)
 
 ---
 
@@ -63,9 +78,9 @@ El proyecto se organiza mediante una arquitectura basada en componentes y config
 
 Encargado de validar tokens JWT y proteger endpoints.
 
-### Gateway
+### Service
 
-Gestiona el enrutamiento de solicitudes hacia los microservicios.
+Gestiona el enrutamiento de solicitudes hacia los microservicios internos.
 
 ### Filters
 
@@ -99,7 +114,7 @@ com.cuidadoseguro.bff
 
 | Dependencia          | Descripción                    |
 | -------------------- | ------------------------------ |
-| Spring Cloud Gateway | Enrutamiento de microservicios |
+| Spring WebFlux       | Enrutamiento reactivo          |
 | Spring Security      | Seguridad y autenticación      |
 | JWT                  | Validación de tokens           |
 | Spring WebFlux       | Programación reactiva          |
@@ -115,8 +130,13 @@ spring.application.name=bff-cuidadoseguro
 
 server.port=8090
 
-# URL del API Gateway
-gateway.url=http://localhost:8080
+# URLs internas de los microservicios
+auth.url=${AUTH_SERVICE_URL:http://localhost:8081}
+pacientes.url=${PACIENTES_SERVICE_URL:http://localhost:8082}
+datosmedicos.url=${DATOS_MEDICOS_SERVICE_URL:http://localhost:8083}
+
+# Origenes permitidos para llamadas directas al BFF (solo desarrollo local)
+cors.allowed-origins=${CORS_ALLOWED_ORIGINS:http://localhost:5173}
 
 # Swagger
 springdoc.swagger-ui.path=/swagger-ui.html
@@ -134,7 +154,9 @@ spring.main.web-application-type=reactive
 | -------------------------------- | -------------------------- |
 | spring.application.name          | Nombre del BFF             |
 | server.port                      | Puerto del BFF             |
-| gateway.url                      | URL del API Gateway        |
+| auth.url                         | URL interna del MS Auth    |
+| pacientes.url                    | URL interna de MS Pacientes|
+| datosmedicos.url                 | URL interna de MS Datos Med|
 | springdoc.swagger-ui.path        | Ruta Swagger UI            |
 | spring.main.web-application-type | Configura WebFlux reactivo |
 
@@ -224,7 +246,6 @@ El BFF se integra con los distintos microservicios del sistema Cuidado Seguro.
 * Microservicio de Autenticación
 * Microservicio de Pacientes
 * Microservicio de Datos Médicos
-* API Gateway
 
 ---
 
@@ -234,9 +255,9 @@ El BFF se integra con los distintos microservicios del sistema Cuidado Seguro.
 
 Permite adaptar respuestas específicas para el frontend.
 
-## API Gateway
+## AWS API Gateway
 
-Centraliza el acceso y enruta solicitudes.
+Unico punto de entrada publico: HTTPS, CORS, throttling y observabilidad perimetral. Integra unicamente con el BFF, nunca con los microservicios.
 
 ## Programación Reactiva
 
@@ -264,7 +285,9 @@ Antes de ejecutar el proyecto se requiere:
 | Puerto | Descripción              |
 | ------ | ------------------------ |
 | 8090   | Puerto principal del BFF |
-| 8080   | API Gateway              |
+| 8081   | MS Auth                  |
+| 8082   | MS Pacientes             |
+| 8083   | MS Datos Médicos         |
 
 ---
 
@@ -288,7 +311,7 @@ Desarrollado por: Carlos Bernal.
 
 # Conclusión
 
-El BFF de Cuidado Seguro implementa una arquitectura moderna basada en Spring Cloud Gateway y WebFlux.
+El BFF de Cuidado Seguro implementa una arquitectura moderna basada en Spring WebFlux, detras de AWS API Gateway.
 
 El sistema permite:
 

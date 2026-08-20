@@ -18,8 +18,8 @@ public class EvolucionClinicaService {
 
     private final RestTemplate restTemplate;
 
-    @Value("${gateway.url}")
-    private String gatewayUrl;
+    @Value("${datosmedicos.url}")
+    private String datosMedicosUrl;
 
     private HttpHeaders buildHeaders(String token) {
 
@@ -34,7 +34,7 @@ public class EvolucionClinicaService {
         HttpEntity<Void> entity = new HttpEntity<>(buildHeaders(token));
 
         ResponseEntity<EvolucionClinicaDto[]> response = restTemplate.exchange(
-                gatewayUrl + "/evoluciones",
+                datosMedicosUrl + "/evoluciones",
                 HttpMethod.GET,
                 entity,
                 EvolucionClinicaDto[].class
@@ -48,7 +48,7 @@ public class EvolucionClinicaService {
                 new HttpEntity<>(evolucion, buildHeaders(token));
 
         ResponseEntity<EvolucionClinicaDto> response = restTemplate.exchange(
-                gatewayUrl + "/evoluciones",
+                datosMedicosUrl + "/evoluciones",
                 HttpMethod.POST,
                 entity,
                 EvolucionClinicaDto.class
@@ -61,7 +61,7 @@ public class EvolucionClinicaService {
         HttpEntity<Void> entity = new HttpEntity<>(buildHeaders(token));
 
         ResponseEntity<EvolucionClinicaDto> response = restTemplate.exchange(
-                gatewayUrl + "/evoluciones/" + id,
+                datosMedicosUrl + "/evoluciones/" + id,
                 HttpMethod.GET,
                 entity,
                 EvolucionClinicaDto.class
@@ -74,7 +74,7 @@ public class EvolucionClinicaService {
         HttpEntity<Void> entity = new HttpEntity<>(buildHeaders(token));
 
         restTemplate.exchange(
-                gatewayUrl + "/evoluciones/" + id,
+                datosMedicosUrl + "/evoluciones/" + id,
                 HttpMethod.DELETE,
                 entity,
                 Void.class
@@ -86,7 +86,7 @@ public class EvolucionClinicaService {
                     new HttpEntity<>(evolucion, buildHeaders(token));
     
             ResponseEntity<EvolucionClinicaDto> response = restTemplate.exchange(
-                    gatewayUrl + "/evoluciones/" + id,
+                    datosMedicosUrl + "/evoluciones/" + id,
                     HttpMethod.PUT,
                     entity,
                     EvolucionClinicaDto.class

@@ -27,13 +27,13 @@ class ExamenClinicoServiceTest {
     @InjectMocks
     private ExamenClinicoService service;
 
-    @Value("${gateway.url}")
-    private String GATEWAY_URL;
+    @Value("${datosmedicos.url}")
+    private String DATOS_MEDICOS_URL;
     private static final String TOKEN = "test-token";
 
     @BeforeEach
     void setUp() {
-        ReflectionTestUtils.setField(service, "gatewayUrl", GATEWAY_URL);
+        ReflectionTestUtils.setField(service, "datosMedicosUrl", DATOS_MEDICOS_URL);
     }
 
     private ExamenClinicoDto dto() {
@@ -47,7 +47,7 @@ class ExamenClinicoServiceTest {
     @Test
     void listarTodos_debeRetornarLista() {
         ExamenClinicoDto[] array = { dto() };
-        when(restTemplate.exchange(eq(GATEWAY_URL + "/examenes"), eq(HttpMethod.GET),
+        when(restTemplate.exchange(eq(DATOS_MEDICOS_URL + "/examenes"), eq(HttpMethod.GET),
                 any(HttpEntity.class), eq(ExamenClinicoDto[].class)))
                 .thenReturn(ResponseEntity.ok(array));
 
@@ -60,7 +60,7 @@ class ExamenClinicoServiceTest {
     @Test
     void guardar_debeRetornarDto() {
         ExamenClinicoDto dto = dto();
-        when(restTemplate.exchange(eq(GATEWAY_URL + "/examenes"), eq(HttpMethod.POST),
+        when(restTemplate.exchange(eq(DATOS_MEDICOS_URL + "/examenes"), eq(HttpMethod.POST),
                 any(HttpEntity.class), eq(ExamenClinicoDto.class)))
                 .thenReturn(ResponseEntity.ok(dto));
 
@@ -74,7 +74,7 @@ class ExamenClinicoServiceTest {
     void actualizar_debeRetornarDtoActualizado() {
         ExamenClinicoDto dto = dto();
         dto.setEstado("Completado");
-        when(restTemplate.exchange(eq(GATEWAY_URL + "/examenes/1"), eq(HttpMethod.PUT),
+        when(restTemplate.exchange(eq(DATOS_MEDICOS_URL + "/examenes/1"), eq(HttpMethod.PUT),
                 any(HttpEntity.class), eq(ExamenClinicoDto.class)))
                 .thenReturn(ResponseEntity.ok(dto));
 
@@ -86,7 +86,7 @@ class ExamenClinicoServiceTest {
     @Test
     void actualizar_conError_debePropagar() {
         ExamenClinicoDto dto = dto();
-        when(restTemplate.exchange(eq(GATEWAY_URL + "/examenes/1"), eq(HttpMethod.PUT),
+        when(restTemplate.exchange(eq(DATOS_MEDICOS_URL + "/examenes/1"), eq(HttpMethod.PUT),
                 any(HttpEntity.class), eq(ExamenClinicoDto.class)))
                 .thenThrow(new RuntimeException("Error de red"));
 
@@ -95,7 +95,7 @@ class ExamenClinicoServiceTest {
 
     @Test
     void buscarPorId_debeRetornarDto() {
-        when(restTemplate.exchange(eq(GATEWAY_URL + "/examenes/1"), eq(HttpMethod.GET),
+        when(restTemplate.exchange(eq(DATOS_MEDICOS_URL + "/examenes/1"), eq(HttpMethod.GET),
                 any(HttpEntity.class), eq(ExamenClinicoDto.class)))
                 .thenReturn(ResponseEntity.ok(dto()));
 
@@ -106,7 +106,7 @@ class ExamenClinicoServiceTest {
 
     @Test
     void eliminar_debeEjecutarseSinError() {
-        when(restTemplate.exchange(eq(GATEWAY_URL + "/examenes/1"), eq(HttpMethod.DELETE),
+        when(restTemplate.exchange(eq(DATOS_MEDICOS_URL + "/examenes/1"), eq(HttpMethod.DELETE),
                 any(HttpEntity.class), eq(Void.class)))
                 .thenReturn(ResponseEntity.noContent().build());
 

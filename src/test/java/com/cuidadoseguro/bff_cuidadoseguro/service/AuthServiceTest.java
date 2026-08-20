@@ -27,13 +27,17 @@ class AuthServiceTest {
     private AuthService authService;
 
     
-    @Value("${gateway.url}")
-    private String GATEWAY_URL;
+    @Value("${auth.url}")
+    private String AUTH_URL;
+
+    @Value("${pacientes.url}")
+    private String PACIENTES_URL;
     private static final String TOKEN = "Bearer test-token";
 
     @BeforeEach
     void setUp() {
-        ReflectionTestUtils.setField(authService, "gatewayUrl", GATEWAY_URL);
+        ReflectionTestUtils.setField(authService, "authUrl", AUTH_URL);
+        ReflectionTestUtils.setField(authService, "pacientesUrl", PACIENTES_URL);
     }
 
     @Test
@@ -43,7 +47,7 @@ class AuthServiceTest {
         request.setPassword("clave");
 
         when(restTemplate.postForObject(
-                eq(GATEWAY_URL + "/auth/login"),
+                eq(AUTH_URL + "/auth/login"),
                 eq(request),
                 eq(String.class)))
                 .thenReturn("{\"token\":\"abc123\"}");
@@ -60,7 +64,7 @@ class AuthServiceTest {
         ResponseEntity<String> responseEntity = ResponseEntity.ok(responseBody);
 
         when(restTemplate.exchange(
-                eq(GATEWAY_URL + "/auth/userinfo"),
+                eq(AUTH_URL + "/auth/userinfo"),
                 eq(HttpMethod.GET),
                 any(HttpEntity.class),
                 eq(String.class)))
@@ -85,7 +89,7 @@ class AuthServiceTest {
                 .build();
 
         when(restTemplate.postForObject(
-                eq(GATEWAY_URL + "/auth/register"),
+                eq(AUTH_URL + "/auth/register"),
                 eq(request),
                 eq(String.class)))
                 .thenReturn("{\"success\":true}");
@@ -102,7 +106,7 @@ class AuthServiceTest {
         request.setRefreshToken("refresh-token");
 
         when(restTemplate.postForObject(
-                eq(GATEWAY_URL + "/auth/refresh"),
+                eq(AUTH_URL + "/auth/refresh"),
                 eq(request),
                 eq(String.class)))
                 .thenReturn("{\"token\":\"nuevo-token\"}");
@@ -119,7 +123,7 @@ class AuthServiceTest {
         request.setRefreshToken("refresh-token");
 
         when(restTemplate.postForObject(
-                eq(GATEWAY_URL + "/auth/logout"),
+                eq(AUTH_URL + "/auth/logout"),
                 eq(request),
                 eq(String.class)))
                 .thenReturn("{\"success\":true}");
@@ -136,7 +140,7 @@ class AuthServiceTest {
         ResponseEntity<String> responseEntity = ResponseEntity.ok("{\"success\":true}");
 
         when(restTemplate.exchange(
-                eq(GATEWAY_URL + "/auth/validate"),
+                eq(AUTH_URL + "/auth/validate"),
                 eq(HttpMethod.GET),
                 any(HttpEntity.class),
                 eq(String.class)))
@@ -154,7 +158,7 @@ class AuthServiceTest {
         String errorBody = "{\"message\":\"Token expirado\"}";
 
         when(restTemplate.exchange(
-                eq(GATEWAY_URL + "/auth/validate"),
+                eq(AUTH_URL + "/auth/validate"),
                 eq(HttpMethod.GET),
                 any(HttpEntity.class),
                 eq(String.class)))
@@ -170,7 +174,7 @@ class AuthServiceTest {
     @Test
     void health_debeRetornarEstado() {
         when(restTemplate.getForObject(
-                eq(GATEWAY_URL + "/auth/health"),
+                eq(AUTH_URL + "/auth/health"),
                 eq(String.class)))
                 .thenReturn("OK");
 
@@ -185,7 +189,7 @@ class AuthServiceTest {
         Object paciente = new Object();
 
         when(restTemplate.exchange(
-                eq(GATEWAY_URL + "/pacientes/rut/" + rut),
+                eq(PACIENTES_URL + "/pacientes/rut/" + rut),
                 eq(HttpMethod.GET),
                 any(HttpEntity.class),
                 eq(Object.class)))

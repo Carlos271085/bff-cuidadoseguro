@@ -19,14 +19,12 @@ public class MedicamentoService {
 
     private final RestTemplate restTemplate;
 
-    @Value("${gateway.url}")
-    private String gatewayUrl;
+    @Value("${datosmedicos.url}")
+    private String datosMedicosUrl;
 
     private final String BASE_PATH = "/medicamentos";
 
     public List<MedicamentoDto> listar(String token) {
-
-        System.out.println("TOKEN ORIGINAL: " + token);
 
         HttpHeaders headers = new HttpHeaders();
 
@@ -34,15 +32,12 @@ public class MedicamentoService {
                 token.replace("Bearer ", "")
         );
 
-        System.out.println("AUTH HEADER: " +
-                headers.getFirst("Authorization"));
-
         HttpEntity<Void> entity =
                 new HttpEntity<>(headers);
 
         ResponseEntity<MedicamentoDto[]> response =
                 restTemplate.exchange(
-                        gatewayUrl + BASE_PATH,
+                        datosMedicosUrl + BASE_PATH,
                         HttpMethod.GET,
                         entity,
                         MedicamentoDto[].class
@@ -65,7 +60,7 @@ public class MedicamentoService {
                 new HttpEntity<>(medicamentoDto, headers);
 
         return restTemplate.exchange(
-                gatewayUrl + BASE_PATH,
+                datosMedicosUrl + BASE_PATH,
                 HttpMethod.POST,
                 entity,
                 MedicamentoDto.class
@@ -84,7 +79,7 @@ public class MedicamentoService {
                         new HttpEntity<>(medicamentoDto, headers);
         
                 return restTemplate.exchange(
-                        gatewayUrl + BASE_PATH + "/" + id,
+                        datosMedicosUrl + BASE_PATH + "/" + id,
                         HttpMethod.PUT,
                         entity,
                         MedicamentoDto.class

@@ -19,8 +19,8 @@ public class ControlMedicoService {
 
     private final RestTemplate restTemplate;
 
-    @Value("${gateway.url}")
-    private String gatewayUrl;
+    @Value("${datosmedicos.url}")
+    private String datosMedicosUrl;
 
     private HttpHeaders buildHeaders(String token) {
 
@@ -35,7 +35,7 @@ public class ControlMedicoService {
         HttpEntity<Void> entity = new HttpEntity<>(buildHeaders(token));
 
         ResponseEntity<ControlMedicoDto[]> response = restTemplate.exchange(
-                gatewayUrl + "/controles",
+                datosMedicosUrl + "/controles",
                 HttpMethod.GET,
                 entity,
                 ControlMedicoDto[].class
@@ -49,7 +49,7 @@ public class ControlMedicoService {
                 new HttpEntity<>(control, buildHeaders(token));
 
         ResponseEntity<ControlMedicoDto> response = restTemplate.exchange(
-                gatewayUrl + "/controles",
+                datosMedicosUrl + "/controles",
                 HttpMethod.POST,
                 entity,
                 ControlMedicoDto.class
@@ -62,7 +62,7 @@ public class ControlMedicoService {
         HttpEntity<Void> entity = new HttpEntity<>(buildHeaders(token));
 
         ResponseEntity<ControlMedicoDto> response = restTemplate.exchange(
-                gatewayUrl + "/controles/" + id,
+                datosMedicosUrl + "/controles/" + id,
                 HttpMethod.GET,
                 entity,
                 ControlMedicoDto.class
@@ -75,7 +75,7 @@ public class ControlMedicoService {
         HttpEntity<Void> entity = new HttpEntity<>(buildHeaders(token));
 
         restTemplate.exchange(
-                gatewayUrl + "/controles/" + id,
+                datosMedicosUrl + "/controles/" + id,
                 HttpMethod.DELETE,
                 entity,
                 Void.class

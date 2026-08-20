@@ -28,14 +28,14 @@ class SignosVitalesServiceTest {
     @InjectMocks
     private SignosVitalesService signosVitalesService;
 
-    @Value("${gateway.url}")
-    private String GATEWAY_URL;
+    @Value("${datosmedicos.url}")
+    private String DATOS_MEDICOS_URL;
     private static final String TOKEN = "test-token";
     private static final String BASE_PATH = "/signos-vitales";
 
     @BeforeEach
     void setUp() {
-        ReflectionTestUtils.setField(signosVitalesService, "gatewayUrl", GATEWAY_URL);
+        ReflectionTestUtils.setField(signosVitalesService, "datosMedicosUrl", DATOS_MEDICOS_URL);
     }
 
     private SignosVitalesDto crearDto() {
@@ -48,7 +48,7 @@ class SignosVitalesServiceTest {
         SignosVitalesDto[] array = { crearDto(), crearDto() };
 
         when(restTemplate.exchange(
-                eq(GATEWAY_URL + BASE_PATH),
+                eq(DATOS_MEDICOS_URL + BASE_PATH),
                 eq(HttpMethod.GET),
                 any(HttpEntity.class),
                 eq(SignosVitalesDto[].class)))
@@ -63,7 +63,7 @@ class SignosVitalesServiceTest {
     @Test
     void listarTodos_respuestaNull_debeRetornarListaVacia() {
         when(restTemplate.exchange(
-                eq(GATEWAY_URL + BASE_PATH),
+                eq(DATOS_MEDICOS_URL + BASE_PATH),
                 eq(HttpMethod.GET),
                 any(HttpEntity.class),
                 eq(SignosVitalesDto[].class)))
@@ -81,7 +81,7 @@ class SignosVitalesServiceTest {
         SignosVitalesDto dto = crearDto();
 
         when(restTemplate.exchange(
-                eq(GATEWAY_URL + BASE_PATH + "/" + fichaId),
+                eq(DATOS_MEDICOS_URL + BASE_PATH + "/" + fichaId),
                 eq(HttpMethod.POST),
                 any(HttpEntity.class),
                 eq(SignosVitalesDto.class)))
@@ -100,7 +100,7 @@ class SignosVitalesServiceTest {
         SignosVitalesDto dto = crearDto();
 
         when(restTemplate.exchange(
-                eq(GATEWAY_URL + BASE_PATH + "/" + id),
+                eq(DATOS_MEDICOS_URL + BASE_PATH + "/" + id),
                 eq(HttpMethod.GET),
                 any(HttpEntity.class),
                 eq(SignosVitalesDto.class)))
@@ -117,7 +117,7 @@ class SignosVitalesServiceTest {
         Long id = 1L;
 
         when(restTemplate.exchange(
-                eq(GATEWAY_URL + BASE_PATH + "/" + id),
+                eq(DATOS_MEDICOS_URL + BASE_PATH + "/" + id),
                 eq(HttpMethod.DELETE),
                 any(HttpEntity.class),
                 eq(Void.class)))
@@ -133,7 +133,7 @@ class SignosVitalesServiceTest {
         SignosVitalesDto[] array = { crearDto() };
 
         when(restTemplate.exchange(
-                eq(GATEWAY_URL + BASE_PATH + "/ficha/" + fichaId),
+                eq(DATOS_MEDICOS_URL + BASE_PATH + "/ficha/" + fichaId),
                 eq(HttpMethod.GET),
                 any(HttpEntity.class),
                 eq(SignosVitalesDto[].class)))
@@ -149,7 +149,7 @@ class SignosVitalesServiceTest {
         Long fichaId = 2L;
 
         when(restTemplate.exchange(
-                eq(GATEWAY_URL + BASE_PATH + "/ficha/" + fichaId),
+                eq(DATOS_MEDICOS_URL + BASE_PATH + "/ficha/" + fichaId),
                 eq(HttpMethod.GET),
                 any(HttpEntity.class),
                 eq(SignosVitalesDto[].class)))
