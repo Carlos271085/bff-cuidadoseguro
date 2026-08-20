@@ -24,27 +24,27 @@ class DatosMedicosServiceTest {
     @InjectMocks
     private DatosMedicosService service;
 
-    @Value("${gateway.url}")
-    private String GATEWAY_URL;
+    @Value("${datosmedicos.url}")
+    private String DATOS_MEDICOS_URL;
     private static final String TOKEN = "test-token";
 
     @BeforeEach
     void setUp() {
-        ReflectionTestUtils.setField(service, "gatewayUrl", GATEWAY_URL);
+        ReflectionTestUtils.setField(service, "datosMedicosUrl", DATOS_MEDICOS_URL);
     }
 
     @Test
     void obtenerSignosVitales_debeRetornarDatos() {
         // El servicio hace dos llamadas: exchange a /controles y getForObject a /signos-vitales
         when(restTemplate.exchange(
-                eq(GATEWAY_URL + "/controles"),
+                eq(DATOS_MEDICOS_URL + "/controles"),
                 eq(HttpMethod.GET),
                 any(HttpEntity.class),
                 eq(String.class)))
                 .thenReturn(ResponseEntity.ok("[{\"presion\":\"120/80\"}]"));
 
         when(restTemplate.getForObject(
-                eq(GATEWAY_URL + "/signos-vitales"),
+                eq(DATOS_MEDICOS_URL + "/signos-vitales"),
                 eq(String.class)))
                 .thenReturn("[{\"presion\":\"120/80\"}]");
 

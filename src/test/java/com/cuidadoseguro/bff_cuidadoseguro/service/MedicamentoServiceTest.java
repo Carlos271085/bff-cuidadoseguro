@@ -27,13 +27,13 @@ class MedicamentoServiceTest {
     @InjectMocks
     private MedicamentoService service;
 
-    @Value("${gateway.url}")
-    private String GATEWAY_URL;
+    @Value("${datosmedicos.url}")
+    private String DATOS_MEDICOS_URL;
     private static final String TOKEN = "Bearer test-token";
 
     @BeforeEach
     void setUp() {
-        ReflectionTestUtils.setField(service, "gatewayUrl", GATEWAY_URL);
+        ReflectionTestUtils.setField(service, "datosMedicosUrl", DATOS_MEDICOS_URL);
     }
 
     private MedicamentoDto dto() {
@@ -47,7 +47,7 @@ class MedicamentoServiceTest {
     @Test
     void listar_debeRetornarLista() {
         MedicamentoDto[] array = { dto() };
-        when(restTemplate.exchange(eq(GATEWAY_URL + "/medicamentos"), eq(HttpMethod.GET),
+        when(restTemplate.exchange(eq(DATOS_MEDICOS_URL + "/medicamentos"), eq(HttpMethod.GET),
                 any(HttpEntity.class), eq(MedicamentoDto[].class)))
                 .thenReturn(ResponseEntity.ok(array));
 
@@ -59,7 +59,7 @@ class MedicamentoServiceTest {
 
     @Test
     void listar_respuestaNull_debeRetornarListaVacia() {
-        when(restTemplate.exchange(eq(GATEWAY_URL + "/medicamentos"), eq(HttpMethod.GET),
+        when(restTemplate.exchange(eq(DATOS_MEDICOS_URL + "/medicamentos"), eq(HttpMethod.GET),
                 any(HttpEntity.class), eq(MedicamentoDto[].class)))
                 .thenReturn(ResponseEntity.ok(null));
 
@@ -72,7 +72,7 @@ class MedicamentoServiceTest {
     @Test
     void guardar_debeRetornarDto() {
         MedicamentoDto dto = dto();
-        when(restTemplate.exchange(eq(GATEWAY_URL + "/medicamentos"), eq(HttpMethod.POST),
+        when(restTemplate.exchange(eq(DATOS_MEDICOS_URL + "/medicamentos"), eq(HttpMethod.POST),
                 any(HttpEntity.class), eq(MedicamentoDto.class)))
                 .thenReturn(ResponseEntity.ok(dto));
 
@@ -86,7 +86,7 @@ class MedicamentoServiceTest {
     void actualizar_debeRetornarDtoActualizado() {
         MedicamentoDto dto = dto();
         dto.setDosis("800mg");
-        when(restTemplate.exchange(eq(GATEWAY_URL + "/medicamentos/1"), eq(HttpMethod.PUT),
+        when(restTemplate.exchange(eq(DATOS_MEDICOS_URL + "/medicamentos/1"), eq(HttpMethod.PUT),
                 any(HttpEntity.class), eq(MedicamentoDto.class)))
                 .thenReturn(ResponseEntity.ok(dto));
 

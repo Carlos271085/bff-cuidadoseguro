@@ -24,7 +24,6 @@
     <!-- Propiedades -->
     <properties>
         <java.version>17</java.version>
-        <spring-cloud.version>2023.0.1</spring-cloud.version>
     </properties>
 
     <!-- Dependencias -->
@@ -34,10 +33,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
-        <!-- Gateway -->
+        <!-- WebFlux: el BFF expone su API reactiva. No usa Spring Cloud Gateway:
+             el punto de entrada publico es AWS API Gateway. -->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-gateway</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
 
         <!-- Swagger OpenAPI -->
@@ -93,21 +93,6 @@
 
 
     </dependencies>
-
-    <!-- Spring Cloud -->
-    <dependencyManagement>
-        <dependencies>
-
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring-cloud.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-        </dependencies>
-    </dependencyManagement>
 
     <!-- Build -->
     <build>

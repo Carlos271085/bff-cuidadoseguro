@@ -23,24 +23,26 @@ public class AuthService {
 
     private final RestTemplate restTemplate;
 
-    @Value("${gateway.url}")
-    private String gatewayUrl;
+    @Value("${auth.url}")
+    private String authUrl;
+
+    @Value("${pacientes.url}")
+    private String pacientesUrl;
 
     public AuthService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
     public String login(LoginRequest request) {
-        // System.out.println("AAA: "+gatewayUrl + "/auth/login");
         return restTemplate.postForObject(
-                gatewayUrl + "/auth/login",
+                authUrl + "/auth/login",
                 request,
                 String.class);
     }
 
     public String getUserInfo(String token) {
 
-        String url = gatewayUrl + "/auth/userinfo";
+        String url = authUrl + "/auth/userinfo";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -61,21 +63,21 @@ public class AuthService {
 
     public String register(RegisterRequest request) {
         return restTemplate.postForObject(
-                gatewayUrl + "/auth/register",
+                authUrl + "/auth/register",
                 request,
                 String.class);
     }
 
     public String refresh(RefreshRequest request) {
         return restTemplate.postForObject(
-                gatewayUrl + "/auth/refresh",
+                authUrl + "/auth/refresh",
                 request,
                 String.class);
     }
 
     public String logout(LogoutRequest request) {
         return restTemplate.postForObject(
-                gatewayUrl + "/auth/logout",
+                authUrl + "/auth/logout",
                 request,
                 String.class);
     }
@@ -91,7 +93,7 @@ public class AuthService {
         HttpEntity<Void> entity = new HttpEntity<>(headers);
 
         ResponseEntity<Object> response = restTemplate.exchange(
-                gatewayUrl +
+                pacientesUrl +
                         "/pacientes/rut/" + rut,
                 HttpMethod.GET,
                 entity,
@@ -102,7 +104,7 @@ public class AuthService {
 
     public String validate(String token) {
 
-        String url = gatewayUrl + "/auth/validate";
+        String url = authUrl + "/auth/validate";
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
@@ -146,7 +148,7 @@ public class AuthService {
 
     public String health() {
         return restTemplate.getForObject(
-                gatewayUrl + "/auth/health",
+                authUrl + "/auth/health",
                 String.class);
     }
 }

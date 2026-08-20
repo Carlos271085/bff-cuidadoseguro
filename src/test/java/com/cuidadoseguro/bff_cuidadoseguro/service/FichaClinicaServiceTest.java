@@ -27,13 +27,13 @@ class FichaClinicaServiceTest {
     @InjectMocks
     private FichaClinicaService fichaClinicaService;
 
-    @Value("${gateway.url}")
-    private String GATEWAY_URL;
+    @Value("${datosmedicos.url}")
+    private String DATOS_MEDICOS_URL;
     private static final String TOKEN = "test-token";
 
     @BeforeEach
     void setUp() {
-        ReflectionTestUtils.setField(fichaClinicaService, "gatewayUrl", GATEWAY_URL);
+        ReflectionTestUtils.setField(fichaClinicaService, "datosMedicosUrl", DATOS_MEDICOS_URL);
     }
 
     private FichaClinicaDto crearFicha() {
@@ -52,7 +52,7 @@ class FichaClinicaServiceTest {
         FichaClinicaDto[] array = { crearFicha(), crearFicha() };
 
         when(restTemplate.exchange(
-                eq(GATEWAY_URL + "/fichas"),
+                eq(DATOS_MEDICOS_URL + "/fichas"),
                 eq(HttpMethod.GET),
                 any(HttpEntity.class),
                 eq(FichaClinicaDto[].class)))
@@ -70,7 +70,7 @@ class FichaClinicaServiceTest {
         FichaClinicaDto ficha = crearFicha();
 
         when(restTemplate.exchange(
-                eq(GATEWAY_URL + "/fichas"),
+                eq(DATOS_MEDICOS_URL + "/fichas"),
                 eq(HttpMethod.POST),
                 any(HttpEntity.class),
                 eq(FichaClinicaDto.class)))
@@ -90,7 +90,7 @@ class FichaClinicaServiceTest {
         saved.setId(10L);
 
         when(restTemplate.exchange(
-                eq(GATEWAY_URL + "/fichas"),
+                eq(DATOS_MEDICOS_URL + "/fichas"),
                 eq(HttpMethod.POST),
                 any(HttpEntity.class),
                 eq(FichaClinicaDto.class)))
@@ -115,7 +115,7 @@ class FichaClinicaServiceTest {
         fichaClinicaService.listar(TOKEN);
 
         verify(restTemplate, times(1)).exchange(
-                eq(GATEWAY_URL + "/fichas"),
+                eq(DATOS_MEDICOS_URL + "/fichas"),
                 eq(HttpMethod.GET),
                 any(HttpEntity.class),
                 eq(FichaClinicaDto[].class));

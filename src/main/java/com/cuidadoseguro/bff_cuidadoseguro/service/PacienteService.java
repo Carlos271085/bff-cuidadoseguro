@@ -20,8 +20,8 @@ public class PacienteService {
 
     private final RestTemplate restTemplate;
 
-    @Value("${gateway.url}")
-    private String gatewayUrl;
+    @Value("${pacientes.url}")
+    private String pacientesUrl;
 
     private HttpHeaders buildHeaders(String token) {
 
@@ -41,7 +41,7 @@ public class PacienteService {
         try {
 
             return restTemplate.exchange(
-                    gatewayUrl + "/pacientes/rut/" + rut,
+                    pacientesUrl + "/pacientes/rut/" + rut,
                     HttpMethod.GET,
                     entity,
                     String.class);
@@ -78,7 +78,7 @@ public class PacienteService {
         try {
 
             return restTemplate.exchange(
-                    gatewayUrl + "/pacientes",
+                    pacientesUrl + "/pacientes",
                     HttpMethod.GET,
                     entity,
                     String.class);
@@ -116,7 +116,7 @@ public class PacienteService {
 
         try {
             ResponseEntity<PacienteDto> response = restTemplate.exchange(
-                    gatewayUrl + "/pacientes/" + id,
+                    pacientesUrl + "/pacientes/" + id,
                     HttpMethod.GET,
                     entity,
                     PacienteDto.class);
@@ -124,7 +124,7 @@ public class PacienteService {
             return response.getBody();
         } catch (HttpClientErrorException e) {
             throw new RuntimeException(
-                    "Error calling gateway: " + e.getStatusCode() + " " + e.getResponseBodyAsString());
+                    "Error llamando a MS Pacientes: " + e.getStatusCode() + " " + e.getResponseBodyAsString());
         }
     }
 
@@ -135,7 +135,7 @@ public class PacienteService {
 
         try {
             ResponseEntity<PacienteDto> response = restTemplate.exchange(
-                    gatewayUrl + "/pacientes",
+                    pacientesUrl + "/pacientes",
                     HttpMethod.POST,
                     entity,
                     PacienteDto.class);
@@ -143,7 +143,7 @@ public class PacienteService {
             return response.getBody();
         } catch (HttpClientErrorException e) {
             throw new RuntimeException(
-                    "Error calling gateway: " + e.getStatusCode() + " " + e.getResponseBodyAsString());
+                    "Error llamando a MS Pacientes: " + e.getStatusCode() + " " + e.getResponseBodyAsString());
         }
     }
 
@@ -154,7 +154,7 @@ public class PacienteService {
 
         try {
             ResponseEntity<PacienteDto> response = restTemplate.exchange(
-                    gatewayUrl + "/pacientes/" + id,
+                    pacientesUrl + "/pacientes/" + id,
                     HttpMethod.PUT,
                     entity,
                     PacienteDto.class);
@@ -162,7 +162,7 @@ public class PacienteService {
             return response.getBody();
         } catch (HttpClientErrorException e) {
             throw new RuntimeException(
-                    "Error calling gateway: " + e.getStatusCode() + " " + e.getResponseBodyAsString());
+                    "Error llamando a MS Pacientes: " + e.getStatusCode() + " " + e.getResponseBodyAsString());
         }
     }
 
@@ -176,13 +176,13 @@ public class PacienteService {
 
         try {
             restTemplate.exchange(
-                    gatewayUrl + "/pacientes/" + id,
+                    pacientesUrl + "/pacientes/" + id,
                     HttpMethod.DELETE,
                     entity,
                     Void.class);
         } catch (HttpClientErrorException e) {
             throw new RuntimeException(
-                    "Error calling gateway: " + e.getStatusCode() + " " + e.getResponseBodyAsString());
+                    "Error llamando a MS Pacientes: " + e.getStatusCode() + " " + e.getResponseBodyAsString());
         }
     }
 }
