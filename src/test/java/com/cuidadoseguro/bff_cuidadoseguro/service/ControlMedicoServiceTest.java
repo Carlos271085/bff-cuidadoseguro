@@ -27,13 +27,13 @@ class ControlMedicoServiceTest {
     @InjectMocks
     private ControlMedicoService service;
 
-    @Value("${gateway.url}")
-    private String GATEWAY_URL;
+    @Value("${datosmedicos.url}")
+    private String DATOS_MEDICOS_URL;
     private static final String TOKEN = "test-token";
 
     @BeforeEach
     void setUp() {
-        ReflectionTestUtils.setField(service, "gatewayUrl", GATEWAY_URL);
+        ReflectionTestUtils.setField(service, "datosMedicosUrl", DATOS_MEDICOS_URL);
     }
 
     private ControlMedicoDto dto() {
@@ -47,7 +47,7 @@ class ControlMedicoServiceTest {
     @Test
     void listarTodos_debeRetornarLista() {
         ControlMedicoDto[] array = { dto(), dto() };
-        when(restTemplate.exchange(eq(GATEWAY_URL + "/controles"), eq(HttpMethod.GET),
+        when(restTemplate.exchange(eq(DATOS_MEDICOS_URL + "/controles"), eq(HttpMethod.GET),
                 any(HttpEntity.class), eq(ControlMedicoDto[].class)))
                 .thenReturn(ResponseEntity.ok(array));
 
@@ -59,7 +59,7 @@ class ControlMedicoServiceTest {
     @Test
     void guardar_debeRetornarDto() {
         ControlMedicoDto dto = dto();
-        when(restTemplate.exchange(eq(GATEWAY_URL + "/controles"), eq(HttpMethod.POST),
+        when(restTemplate.exchange(eq(DATOS_MEDICOS_URL + "/controles"), eq(HttpMethod.POST),
                 any(HttpEntity.class), eq(ControlMedicoDto.class)))
                 .thenReturn(ResponseEntity.ok(dto));
 
@@ -71,7 +71,7 @@ class ControlMedicoServiceTest {
 
     @Test
     void buscarPorId_debeRetornarDto() {
-        when(restTemplate.exchange(eq(GATEWAY_URL + "/controles/1"), eq(HttpMethod.GET),
+        when(restTemplate.exchange(eq(DATOS_MEDICOS_URL + "/controles/1"), eq(HttpMethod.GET),
                 any(HttpEntity.class), eq(ControlMedicoDto.class)))
                 .thenReturn(ResponseEntity.ok(dto()));
 
@@ -83,12 +83,12 @@ class ControlMedicoServiceTest {
 
     @Test
     void eliminar_debeEjecutarseSinError() {
-        when(restTemplate.exchange(eq(GATEWAY_URL + "/controles/1"), eq(HttpMethod.DELETE),
+        when(restTemplate.exchange(eq(DATOS_MEDICOS_URL + "/controles/1"), eq(HttpMethod.DELETE),
                 any(HttpEntity.class), eq(Void.class)))
                 .thenReturn(ResponseEntity.noContent().build());
 
         assertDoesNotThrow(() -> service.eliminar(TOKEN, 1L));
-        verify(restTemplate).exchange(eq(GATEWAY_URL + "/controles/1"),
+        verify(restTemplate).exchange(eq(DATOS_MEDICOS_URL + "/controles/1"),
                 eq(HttpMethod.DELETE), any(HttpEntity.class), eq(Void.class));
     }
 }

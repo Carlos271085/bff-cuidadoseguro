@@ -18,8 +18,8 @@ public class ExamenClinicoService {
 
         private final RestTemplate restTemplate;
 
-        @Value("${gateway.url}")
-        private String gatewayUrl;
+        @Value("${datosmedicos.url}")
+        private String datosMedicosUrl;
 
         private final String BASE_PATH = "/examenes";
 
@@ -40,10 +40,8 @@ public class ExamenClinicoService {
 
                 HttpEntity<Void> entity = new HttpEntity<>(buildHeaders(token));
 
-                System.out.println("TOKEN: " + token);
-
                 ResponseEntity<ExamenClinicoDto[]> response = restTemplate.exchange(
-                                gatewayUrl + BASE_PATH,
+                                datosMedicosUrl + BASE_PATH,
                                 HttpMethod.GET,
                                 entity,
                                 ExamenClinicoDto[].class);
@@ -60,11 +58,8 @@ public class ExamenClinicoService {
 
                 try {
 
-                        System.out.println("=== DTO RECIBIDO EN BFF ===");
-                        System.out.println(examen);
-
                         ResponseEntity<ExamenClinicoDto> response = restTemplate.exchange(
-                                        gatewayUrl + BASE_PATH + "/" + id,
+                                        datosMedicosUrl + BASE_PATH + "/" + id,
                                         HttpMethod.PUT,
                                         entity,
                                         ExamenClinicoDto.class);
@@ -86,7 +81,7 @@ public class ExamenClinicoService {
                 HttpEntity<ExamenClinicoDto> entity = new HttpEntity<>(examen, buildHeaders(token));
 
                 ResponseEntity<ExamenClinicoDto> response = restTemplate.exchange(
-                                gatewayUrl + BASE_PATH,
+                                datosMedicosUrl + BASE_PATH,
                                 HttpMethod.POST,
                                 entity,
                                 ExamenClinicoDto.class);
@@ -101,7 +96,7 @@ public class ExamenClinicoService {
                 HttpEntity<Void> entity = new HttpEntity<>(buildHeaders(token));
 
                 ResponseEntity<ExamenClinicoDto> response = restTemplate.exchange(
-                                gatewayUrl + BASE_PATH + "/" + id,
+                                datosMedicosUrl + BASE_PATH + "/" + id,
                                 HttpMethod.GET,
                                 entity,
                                 ExamenClinicoDto.class);
@@ -116,7 +111,7 @@ public class ExamenClinicoService {
                 HttpEntity<Void> entity = new HttpEntity<>(buildHeaders(token));
 
                 restTemplate.exchange(
-                                gatewayUrl + BASE_PATH + "/" + id,
+                                datosMedicosUrl + BASE_PATH + "/" + id,
                                 HttpMethod.DELETE,
                                 entity,
                                 Void.class);

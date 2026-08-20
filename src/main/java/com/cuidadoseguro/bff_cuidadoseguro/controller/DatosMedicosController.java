@@ -16,7 +16,7 @@ import com.cuidadoseguro.bff_cuidadoseguro.service.DatosMedicosService;
 @RequestMapping("/bff/datos-medicos")
 public class DatosMedicosController {
 
-    // Servicio que consumirá el API Gateway
+    // Servicio que consumirá el MS Datos Medicos
     private final DatosMedicosService datosMedicosService;
 
     // Constructor para inyectar el servicio

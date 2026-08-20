@@ -28,13 +28,13 @@ class PacienteServiceTest {
     @InjectMocks
     private PacienteService pacienteService;
 
-    @Value("${gateway.url}")
-    private String GATEWAY_URL;
+    @Value("${pacientes.url}")
+    private String PACIENTES_URL;
     private static final String TOKEN = "Bearer test-token";
 
     @BeforeEach
     void setUp() {
-        ReflectionTestUtils.setField(pacienteService, "gatewayUrl", GATEWAY_URL);
+        ReflectionTestUtils.setField(pacienteService, "pacientesUrl", PACIENTES_URL);
     }
 
     private PacienteDto crearPacienteDto() {
@@ -54,7 +54,7 @@ class PacienteServiceTest {
         ResponseEntity<String> response = ResponseEntity.ok("{\"rut\":\"12345678-9\"}");
 
         when(restTemplate.exchange(
-                eq(GATEWAY_URL + "/pacientes/rut/" + rut),
+                eq(PACIENTES_URL + "/pacientes/rut/" + rut),
                 eq(HttpMethod.GET),
                 any(HttpEntity.class),
                 eq(String.class)))
@@ -71,7 +71,7 @@ class PacienteServiceTest {
         String errorBody = "{\"message\":\"Paciente no encontrado\"}";
 
         when(restTemplate.exchange(
-                eq(GATEWAY_URL + "/pacientes/rut/" + rut),
+                eq(PACIENTES_URL + "/pacientes/rut/" + rut),
                 eq(HttpMethod.GET),
                 any(HttpEntity.class),
                 eq(String.class)))
@@ -88,7 +88,7 @@ class PacienteServiceTest {
         ResponseEntity<String> response = ResponseEntity.ok("[{\"id\":1}]");
 
         when(restTemplate.exchange(
-                eq(GATEWAY_URL + "/pacientes"),
+                eq(PACIENTES_URL + "/pacientes"),
                 eq(HttpMethod.GET),
                 any(HttpEntity.class),
                 eq(String.class)))
@@ -102,7 +102,7 @@ class PacienteServiceTest {
     @Test
     void listar_error_debeRetornarInternalServerError() {
         when(restTemplate.exchange(
-                eq(GATEWAY_URL + "/pacientes"),
+                eq(PACIENTES_URL + "/pacientes"),
                 eq(HttpMethod.GET),
                 any(HttpEntity.class),
                 eq(String.class)))
@@ -119,7 +119,7 @@ class PacienteServiceTest {
         PacienteDto paciente = crearPacienteDto();
 
         when(restTemplate.exchange(
-                eq(GATEWAY_URL + "/pacientes/1"),
+                eq(PACIENTES_URL + "/pacientes/1"),
                 eq(HttpMethod.GET),
                 any(HttpEntity.class),
                 eq(PacienteDto.class)))
@@ -134,7 +134,7 @@ class PacienteServiceTest {
     @Test
     void obtener_error_debeLanzarExcepcion() {
         when(restTemplate.exchange(
-                eq(GATEWAY_URL + "/pacientes/99"),
+                eq(PACIENTES_URL + "/pacientes/99"),
                 eq(HttpMethod.GET),
                 any(HttpEntity.class),
                 eq(PacienteDto.class)))
@@ -148,7 +148,7 @@ class PacienteServiceTest {
         PacienteDto paciente = crearPacienteDto();
 
         when(restTemplate.exchange(
-                eq(GATEWAY_URL + "/pacientes"),
+                eq(PACIENTES_URL + "/pacientes"),
                 eq(HttpMethod.POST),
                 any(HttpEntity.class),
                 eq(PacienteDto.class)))
@@ -165,7 +165,7 @@ class PacienteServiceTest {
         PacienteDto paciente = crearPacienteDto();
 
         when(restTemplate.exchange(
-                eq(GATEWAY_URL + "/pacientes"),
+                eq(PACIENTES_URL + "/pacientes"),
                 eq(HttpMethod.POST),
                 any(HttpEntity.class),
                 eq(PacienteDto.class)))
@@ -180,7 +180,7 @@ class PacienteServiceTest {
         paciente.setNombre("Carlos");
 
         when(restTemplate.exchange(
-                eq(GATEWAY_URL + "/pacientes/1"),
+                eq(PACIENTES_URL + "/pacientes/1"),
                 eq(HttpMethod.PUT),
                 any(HttpEntity.class),
                 eq(PacienteDto.class)))
@@ -195,7 +195,7 @@ class PacienteServiceTest {
     @Test
     void eliminar_exitoso_noDebeLanzarExcepcion() {
         when(restTemplate.exchange(
-                eq(GATEWAY_URL + "/pacientes/1"),
+                eq(PACIENTES_URL + "/pacientes/1"),
                 eq(HttpMethod.DELETE),
                 any(HttpEntity.class),
                 eq(Void.class)))
@@ -207,7 +207,7 @@ class PacienteServiceTest {
     @Test
     void eliminar_error_debeLanzarExcepcion() {
         when(restTemplate.exchange(
-                eq(GATEWAY_URL + "/pacientes/99"),
+                eq(PACIENTES_URL + "/pacientes/99"),
                 eq(HttpMethod.DELETE),
                 any(HttpEntity.class),
                 eq(Void.class)))

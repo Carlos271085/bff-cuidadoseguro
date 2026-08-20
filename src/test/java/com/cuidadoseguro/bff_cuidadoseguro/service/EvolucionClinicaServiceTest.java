@@ -27,13 +27,13 @@ class EvolucionClinicaServiceTest {
     @InjectMocks
     private EvolucionClinicaService service;
 
-    @Value("${gateway.url}")
-    private String GATEWAY_URL;
+    @Value("${datosmedicos.url}")
+    private String DATOS_MEDICOS_URL;
     private static final String TOKEN = "test-token";
 
     @BeforeEach
     void setUp() {
-        ReflectionTestUtils.setField(service, "gatewayUrl", GATEWAY_URL);
+        ReflectionTestUtils.setField(service, "datosMedicosUrl", DATOS_MEDICOS_URL);
     }
 
     private EvolucionClinicaDto dto() {
@@ -46,7 +46,7 @@ class EvolucionClinicaServiceTest {
     @Test
     void listarTodos_debeRetornarLista() {
         EvolucionClinicaDto[] array = { dto(), dto() };
-        when(restTemplate.exchange(eq(GATEWAY_URL + "/evoluciones"), eq(HttpMethod.GET),
+        when(restTemplate.exchange(eq(DATOS_MEDICOS_URL + "/evoluciones"), eq(HttpMethod.GET),
                 any(HttpEntity.class), eq(EvolucionClinicaDto[].class)))
                 .thenReturn(ResponseEntity.ok(array));
 
@@ -58,7 +58,7 @@ class EvolucionClinicaServiceTest {
     @Test
     void guardar_debeRetornarDto() {
         EvolucionClinicaDto dto = dto();
-        when(restTemplate.exchange(eq(GATEWAY_URL + "/evoluciones"), eq(HttpMethod.POST),
+        when(restTemplate.exchange(eq(DATOS_MEDICOS_URL + "/evoluciones"), eq(HttpMethod.POST),
                 any(HttpEntity.class), eq(EvolucionClinicaDto.class)))
                 .thenReturn(ResponseEntity.ok(dto));
 
@@ -70,7 +70,7 @@ class EvolucionClinicaServiceTest {
 
     @Test
     void buscarPorId_debeRetornarDto() {
-        when(restTemplate.exchange(eq(GATEWAY_URL + "/evoluciones/1"), eq(HttpMethod.GET),
+        when(restTemplate.exchange(eq(DATOS_MEDICOS_URL + "/evoluciones/1"), eq(HttpMethod.GET),
                 any(HttpEntity.class), eq(EvolucionClinicaDto.class)))
                 .thenReturn(ResponseEntity.ok(dto()));
 
@@ -81,7 +81,7 @@ class EvolucionClinicaServiceTest {
 
     @Test
     void eliminar_debeEjecutarseSinError() {
-        when(restTemplate.exchange(eq(GATEWAY_URL + "/evoluciones/1"), eq(HttpMethod.DELETE),
+        when(restTemplate.exchange(eq(DATOS_MEDICOS_URL + "/evoluciones/1"), eq(HttpMethod.DELETE),
                 any(HttpEntity.class), eq(Void.class)))
                 .thenReturn(ResponseEntity.noContent().build());
 
@@ -92,7 +92,7 @@ class EvolucionClinicaServiceTest {
     void actualizar_debeRetornarDtoActualizado() {
         EvolucionClinicaDto dto = dto();
         dto.setDescripcion("Actualizada");
-        when(restTemplate.exchange(eq(GATEWAY_URL + "/evoluciones/1"), eq(HttpMethod.PUT),
+        when(restTemplate.exchange(eq(DATOS_MEDICOS_URL + "/evoluciones/1"), eq(HttpMethod.PUT),
                 any(HttpEntity.class), eq(EvolucionClinicaDto.class)))
                 .thenReturn(ResponseEntity.ok(dto));
 

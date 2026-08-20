@@ -24,9 +24,9 @@ public class DatosMedicosService {
     public DatosMedicosService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
-    // Obtiene la URL del API Gateway desde application.properties
-    @Value("${gateway.url}")
-    private String gatewayUrl;
+    // URL interna del MS Datos Medicos
+    @Value("${datosmedicos.url}")
+    private String datosMedicosUrl;
 
     private HttpHeaders buildHeaders(String token) {
 
@@ -41,12 +41,12 @@ public class DatosMedicosService {
     public String obtenerSignosVitales(String token) {
 
         // Construye la URL completa del endpoint
-        String url = gatewayUrl + "/signos-vitales";
+        String url = datosMedicosUrl + "/signos-vitales";
 
         HttpEntity<Void> entity = new HttpEntity<>(buildHeaders(token));
 
         ResponseEntity<String> response = restTemplate.exchange(
-                gatewayUrl + "/controles",
+                datosMedicosUrl + "/controles",
                 HttpMethod.GET,
                 entity,
                 String.class
@@ -54,7 +54,7 @@ public class DatosMedicosService {
 
         //return Arrays.asList(response.getBody());
         
-        // Realiza una petición GET al API Gateway
+        // Realiza una petición GET al MS Datos Medicos
         // y retorna la respuesta como String
         return restTemplate.getForObject(url, String.class);
     }

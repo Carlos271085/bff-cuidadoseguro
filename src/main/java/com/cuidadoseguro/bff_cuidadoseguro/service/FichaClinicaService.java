@@ -19,8 +19,8 @@ public class FichaClinicaService {
 
     private final RestTemplate restTemplate;
 
-    @Value("${gateway.url}")
-    private String gatewayUrl;
+    @Value("${datosmedicos.url}")
+    private String datosMedicosUrl;
 
     private final String BASE_PATH = "/fichas";
 
@@ -31,7 +31,7 @@ public class FichaClinicaService {
         HttpEntity<Void> entity = new HttpEntity<>(headers);
 
         ResponseEntity<FichaClinicaDto[]> response = restTemplate.exchange(
-                gatewayUrl + BASE_PATH,
+                datosMedicosUrl + BASE_PATH,
                 HttpMethod.GET,
                 entity,
                 FichaClinicaDto[].class
@@ -46,7 +46,7 @@ public class FichaClinicaService {
         HttpEntity<FichaClinicaDto> entity = new HttpEntity<>(ficha, headers);
 
         ResponseEntity<FichaClinicaDto> response = restTemplate.exchange(
-                gatewayUrl + BASE_PATH,
+                datosMedicosUrl + BASE_PATH,
                 HttpMethod.POST,
                 entity,
                 FichaClinicaDto.class

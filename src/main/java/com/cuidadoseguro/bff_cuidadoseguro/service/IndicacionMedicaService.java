@@ -20,8 +20,8 @@ public class IndicacionMedicaService {
 
     private final RestTemplate restTemplate;
 
-    @Value("${gateway.url}")
-    private String gatewayUrl;
+    @Value("${datosmedicos.url}")
+    private String datosMedicosUrl;
 
     private final String BASE_PATH = "/indicaciones";
 
@@ -33,7 +33,7 @@ public class IndicacionMedicaService {
         HttpEntity<Void> entity = new HttpEntity<>(headers);
 
         ResponseEntity<IndicacionMedicaDto[]> response = restTemplate.exchange(
-                gatewayUrl + BASE_PATH,
+                datosMedicosUrl + BASE_PATH,
                 HttpMethod.GET,
                 entity,
                 IndicacionMedicaDto[].class
@@ -48,7 +48,7 @@ public class IndicacionMedicaService {
         HttpEntity<IndicacionMedicaDto> entity = new HttpEntity<>(indicacion, headers);
 
         ResponseEntity<IndicacionMedicaDto> response = restTemplate.exchange(
-                gatewayUrl + BASE_PATH,
+                datosMedicosUrl + BASE_PATH,
                 HttpMethod.POST,
                 entity,
                 IndicacionMedicaDto.class
@@ -63,7 +63,7 @@ public class IndicacionMedicaService {
         HttpEntity<Void> entity = new HttpEntity<>(headers);
 
         ResponseEntity<IndicacionMedicaDto> response = restTemplate.exchange(
-                gatewayUrl + BASE_PATH + "/" + id,
+                datosMedicosUrl + BASE_PATH + "/" + id,
                 HttpMethod.GET,
                 entity,
                 IndicacionMedicaDto.class
@@ -78,7 +78,7 @@ public class IndicacionMedicaService {
         HttpEntity<Void> entity = new HttpEntity<>(headers);
 
         restTemplate.exchange(
-                gatewayUrl + BASE_PATH + "/" + id,
+                datosMedicosUrl + BASE_PATH + "/" + id,
                 HttpMethod.DELETE,
                 entity,
                 Void.class
@@ -92,7 +92,7 @@ public class IndicacionMedicaService {
         HttpEntity<IndicacionMedicaDto> entity = new HttpEntity<>(indicacion, headers);
 
         ResponseEntity<IndicacionMedicaDto> response = restTemplate.exchange(
-                gatewayUrl + BASE_PATH + "/" + id,
+                datosMedicosUrl + BASE_PATH + "/" + id,
                 HttpMethod.PUT,
                 entity,
                 IndicacionMedicaDto.class

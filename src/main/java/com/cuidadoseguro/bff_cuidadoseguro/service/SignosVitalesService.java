@@ -19,8 +19,8 @@ public class SignosVitalesService {
 
     private final RestTemplate restTemplate;
 
-    @Value("${gateway.url}")
-    private String gatewayUrl;
+    @Value("${datosmedicos.url}")
+    private String datosMedicosUrl;
 
     private final String BASE_PATH = "/signos-vitales";
 
@@ -31,7 +31,7 @@ public class SignosVitalesService {
         HttpEntity<Void> entity = new HttpEntity<>(headers);
 
         ResponseEntity<SignosVitalesDto[]> response = restTemplate.exchange(
-                gatewayUrl + BASE_PATH,
+                datosMedicosUrl + BASE_PATH,
                 HttpMethod.GET,
                 entity,
                 SignosVitalesDto[].class
@@ -45,7 +45,7 @@ public class SignosVitalesService {
     public List<SignosVitalesDto> listarPorFicha(Long fichaId) {
 
     ResponseEntity<SignosVitalesDto[]> response = restTemplate.exchange(
-            gatewayUrl + BASE_PATH + "/ficha/" + fichaId,
+            datosMedicosUrl + BASE_PATH + "/ficha/" + fichaId,
             HttpMethod.GET,
             null,
             SignosVitalesDto[].class
@@ -68,7 +68,7 @@ public class SignosVitalesService {
         new HttpEntity<>(signosVitalesDto, headers);
 
         return restTemplate.exchange(
-                gatewayUrl + BASE_PATH + "/" + fichaId,
+                datosMedicosUrl + BASE_PATH + "/" + fichaId,
                 HttpMethod.POST,
                 entity,
                 SignosVitalesDto.class
@@ -82,7 +82,7 @@ public class SignosVitalesService {
         HttpEntity<Void> entity = new HttpEntity<>(headers);
 
         return restTemplate.exchange(
-                gatewayUrl + BASE_PATH + "/" + id,
+                datosMedicosUrl + BASE_PATH + "/" + id,
                 HttpMethod.GET,
                 entity,
                 SignosVitalesDto.class
@@ -96,7 +96,7 @@ public class SignosVitalesService {
         HttpEntity<Void> entity = new HttpEntity<>(headers);
 
         restTemplate.exchange(
-                gatewayUrl + BASE_PATH + "/" + id,
+                datosMedicosUrl + BASE_PATH + "/" + id,
                 HttpMethod.DELETE,
                 entity,
                 Void.class
@@ -110,7 +110,7 @@ public class SignosVitalesService {
         HttpEntity<Void> entity = new HttpEntity<>(headers);
 
         ResponseEntity<SignosVitalesDto[]> response = restTemplate.exchange(
-                gatewayUrl + BASE_PATH + "/ficha/" + fichaId,
+                datosMedicosUrl + BASE_PATH + "/ficha/" + fichaId,
                 HttpMethod.GET,
                 entity,
                 SignosVitalesDto[].class

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "BFF - Pacientes", description = "Orquestación de pacientes vía API Gateway")
+@Tag(name = "BFF - Pacientes", description = "Orquestación de pacientes contra MS Pacientes")
 @RestController
 @RequestMapping("/bff/pacientes")
 @RequiredArgsConstructor
